@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2023-07-28T08:13:28.348Z</updated>
+  <updated>2023-08-04T09:05:22.372Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>热部署</title>
+    <link href="http://example.com/2023/08/04/Devtools/"/>
+    <id>http://example.com/2023/08/04/Devtools/</id>
+    <published>2023-08-04T09:03:52.602Z</published>
+    <updated>2023-08-04T09:05:22.372Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="热部署Devtools"><a href="#热部署Devtools" class="headerlink" title="热部署Devtools"></a>热部署Devtools</h1><h4 id="第一步-添加依赖"><a href="#第一步-添加依赖" class="headerlink" title="第一步 添加依赖"></a>第一步 添加依赖</h4><pre><code class="java">&lt;dependency&gt;    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;    &lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;    &lt;scope&gt;runtime&lt;/scope&gt;    &lt;optional&gt;true&lt;/optional&gt;&lt;/dependency&gt;</code></pre><h4 id="第二步-添加配置"><a href="#第二步-添加配置" class="headerlink" title="第二步 添加配置"></a>第二步 添加配置</h4><pre><code class="java">&lt;build&gt;    &lt;finalName&gt;你自己的工程名字&lt;/finalName&gt;    &lt;plugins&gt;        &lt;plugin&gt;            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;            &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;            &lt;configuration&gt;                &lt;fork&gt;true&lt;/fork&gt;                &lt;addResources&gt;true&lt;/addResources&gt;            &lt;/configuration&gt;        &lt;/plugin&gt;    &lt;/plugins&gt;&lt;/build&gt;</code></pre><h4 id="第三步-修改配置"><a href="#第三步-修改配置" class="headerlink" title="第三步 修改配置"></a>第三步 修改配置</h4><p>​<img src="/images/%E7%83%AD%E9%83%A8%E7%BD%B2/image-20230801105429-fu9m0yn.png" alt="image">​</p><p>​<img src="/images/%E7%83%AD%E9%83%A8%E7%BD%B2/image-20230801105433-2h97hee.png" alt="image">​</p><h4 id="第四步-添加配置"><a href="#第四步-添加配置" class="headerlink" title="第四步 添加配置"></a>第四步 添加配置</h4><p>​<img src="/images/%E7%83%AD%E9%83%A8%E7%BD%B2/image-20230801105507-n40ldyf.png" alt="image">​</p><p>​<img src="/images/%E7%83%AD%E9%83%A8%E7%BD%B2/image-20230801105512-evt811g.png" alt="image">​</p><p>新版本可能在修改时找不到第一项，需要打开设置进行设置</p><p>​<img src="/images/%E7%83%AD%E9%83%A8%E7%BD%B2/image-20230801105627-ficn5z7.png" alt="image">​</p><h4 id="第五步-重启idea"><a href="#第五步-重启idea" class="headerlink" title="第五步 重启idea"></a>第五步 重启idea</h4><p>‍</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;热部署Devtools&quot;&gt;&lt;a href=&quot;#热部署Devtools&quot; class=&quot;headerlink&quot; title=&quot;热部署Devtools&quot;&gt;&lt;/a&gt;热部署Devtools&lt;/h1&gt;&lt;h4 id=&quot;第一步-添加依赖&quot;&gt;&lt;a href=&quot;#第一步-添加依赖&quot;</summary>
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>Dataway</title>
