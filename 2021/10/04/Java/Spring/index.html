@@ -1,0 +1,379 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Spring | 胡萝卜</title><meta name="author" content="itcarrot"><meta name="copyright" content="itcarrot"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Spring1 Spring 框架中的单例bean是线程安全的吗？不是线程安全的 Spring框架中有一个@Scope注解，默认的值是singleton，单例的 因为一般在spring的bean的中都是注入无状态的对象，没有线程安全的问题。如果在bean中定义了可修改的成员变量，是要考虑到线程安全的问题，可以使用多例或者加锁来解决。 2 什么是AOP？AOP 称为面向切面编程，用于将那些与业务无关">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring">
+<meta property="og:url" content="http://example.com/2021/10/04/Java/Spring/index.html">
+<meta property="og:site_name" content="胡萝卜">
+<meta property="og:description" content="Spring1 Spring 框架中的单例bean是线程安全的吗？不是线程安全的 Spring框架中有一个@Scope注解，默认的值是singleton，单例的 因为一般在spring的bean的中都是注入无状态的对象，没有线程安全的问题。如果在bean中定义了可修改的成员变量，是要考虑到线程安全的问题，可以使用多例或者加锁来解决。 2 什么是AOP？AOP 称为面向切面编程，用于将那些与业务无关">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2021-10-04T07:46:33.000Z">
+<meta property="article:modified_time" content="2023-12-07T08:23:58.087Z">
+<meta property="article:author" content="itcarrot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2021/10/04/Java/Spring/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Spring',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-12-07 16:23:58'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="胡萝卜" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="胡萝卜"><span class="site-name">胡萝卜</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Spring</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-10-04T07:46:33.000Z" title="发表于 2021-10-04 15:46:33">2021-10-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-12-07T08:23:58.087Z" title="更新于 2023-12-07 16:23:58">2023-12-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Java/">Java</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Spring"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Spring"><a href="#Spring" class="headerlink" title="Spring"></a>Spring</h1><h1 id=""><a href="#" class="headerlink" title=""></a></h1><h2 id="1-Spring-框架中的单例bean是线程安全的吗？"><a href="#1-Spring-框架中的单例bean是线程安全的吗？" class="headerlink" title="1 Spring 框架中的单例bean是线程安全的吗？"></a>1 Spring 框架中的单例bean是线程安全的吗？</h2><p>不是线程安全的</p>
+<p>Spring框架中有一个@Scope注解，默认的值是singleton，单例的</p>
+<p>因为一般在spring的bean的中都是注入无状态的对象，没有线程安全的问题。如果在bean中定义了可修改的成员变量，是要考虑到线程安全的问题，可以使用多例或者加锁来解决。</p>
+<h2 id="2-什么是AOP？"><a href="#2-什么是AOP？" class="headerlink" title="2 什么是AOP？"></a>2 什么是AOP？</h2><pre><code>AOP 称为面向切面编程，用于将那些与业务无关，但却对多个对象产生影响的公共行为和逻辑，抽取并封装为一个可重用的模块，这个模块被命名为“切面”（ Aspect ），减少系统中的重复代码，降低了模块间的耦合度，同时提高了系统的可维护性。
+</code></pre>
+<p>使用场景：</p>
+<ol>
+<li>记录操作日志</li>
+<li>缓存处理</li>
+<li>spring中内置的事务处理</li>
+</ol>
+<h3 id="2-1-Spring中的事务是如何实现的？"><a href="#2-1-Spring中的事务是如何实现的？" class="headerlink" title="2.1 Spring中的事务是如何实现的？"></a>2.1 Spring中的事务是如何实现的？</h3><p>Spring支持编程式事务管理和声明式事务管理两种方式：</p>
+<ol>
+<li>编程式事务控制：需使用Transaction Template来进行实现，对业务的代码又倾入性，项目很少使用</li>
+<li>声明式事务管理：声明式事务管理建立再AOP之上的，其本质是通过AOP功能，对方法前后进行拦截，将事务处理的功能编制到拦截的方法中，也就是再目标方法开始之前加入一个事务，在执行完目标方法之后根据执行情况提交或者回滚事务。</li>
+</ol>
+<h2 id="3-Spring中事务失效的场景有哪些？"><a href="#3-Spring中事务失效的场景有哪些？" class="headerlink" title="3 Spring中事务失效的场景有哪些？"></a>3 Spring中事务失效的场景有哪些？</h2><ol>
+<li>异常捕获处理</li>
+<li>抛出检查异常</li>
+<li>非public方法</li>
+</ol>
+<p>情况一：异常捕获处理</p>
+<p>​<img src="/images/Spring/image-20230815160415-engb6cc.png" alt="image">​</p>
+<p>进行了try catch会直接抛出异常，导致结果不对。</p>
+<p><strong>原因：</strong></p>
+<pre><code>事务通知只会捉到目标抛出的异常，才能进行后续的回滚处理，如果目标自己处理掉了异常，事务将无法进行回滚
+</code></pre>
+<p><strong>解决：</strong></p>
+<pre><code>在catch块中自己抛出异常，throw new RuntimeException()
+</code></pre>
+<p>‍</p>
+<p>情况二：抛出检查异常</p>
+<p>​<img src="/images/Spring/image-20230815160804-9ob5ur8.png" alt="image">​</p>
+<p>读取文件不存在，没办法进行回滚</p>
+<p>原因：</p>
+<pre><code>Spring只进行回滚非检查异常
+</code></pre>
+<p>解决：</p>
+<pre><code>配置rollbackFor属性，@Transactional(rollbackFor=Exception.class)
+</code></pre>
+<p>‍</p>
+<p>情况三：非 public 方法导致的事务失效</p>
+<p>​<img src="/images/Spring/image-20230815161045-lgbk85u.png" alt="image">​</p>
+<p>原因：</p>
+<pre><code>Spring为方法创建代理、添加事务通知、前提条件都是该方法的public的
+</code></pre>
+<p>‍</p>
+<p>解决：</p>
+<pre><code>改为public方法
+</code></pre>
+<p>‍</p>
+<h2 id="4-Spring-的bean-的生命周期？"><a href="#4-Spring-的bean-的生命周期？" class="headerlink" title="4 Spring 的bean 的生命周期？"></a>4 Spring 的bean 的生命周期？</h2><h3 id="BeanDefinition"><a href="#BeanDefinition" class="headerlink" title="BeanDefinition"></a>BeanDefinition</h3><pre><code>Spring容器在进行实例化时，会将xml配置的&lt;bean&gt; 的信息封装成一个Bean Definition对象，Spring根据BeanDefinition来创建Bean对象，里面有很多的属性用来描述Bean。
+</code></pre>
+<p>​<img src="/images/Spring/image-20230815161452-qgmnqbe.png" alt="image">​</p>
+<p>​<img src="/images/Spring/image-20230815161840-wu0iflt.png" alt="image">​</p>
+<p>‍</p>
+<h2 id="5-Spring中的循环引用？"><a href="#5-Spring中的循环引用？" class="headerlink" title="5 Spring中的循环引用？"></a>5 Spring中的循环引用？</h2><p>多个对象互相使用</p>
+<p>​<img src="/images/Spring/image-20230815162551-lx8xcgh.png" alt="image">​</p>
+<p>‍</p>
+<h3 id="5-1-三级缓存解决循环依赖"><a href="#5-1-三级缓存解决循环依赖" class="headerlink" title="5.1 三级缓存解决循环依赖"></a>5.1 三级缓存解决循环依赖</h3><table>
+<thead>
+<tr>
+<th>缓存名称</th>
+<th>源码名称</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>一级缓存</td>
+<td>singletonObjects</td>
+<td>单例池，缓存已经经历了完整的生命周期，已经初始化完成的bean对象</td>
+</tr>
+<tr>
+<td>二级缓存</td>
+<td>earlySingletonObjects</td>
+<td>缓存早期的bean对象（生命周期还没有走完）</td>
+</tr>
+<tr>
+<td>三级缓存</td>
+<td>singletonFactories</td>
+<td>缓存的时ObjectFactory,表示对象工厂，用来创建某个对象的</td>
+</tr>
+</tbody></table>
+<p>一级缓存的作用： 限制 bean 在 beanFactory 中只存一份，即实现 singleton scope ，解决不了循环依赖</p>
+<p>​<img src="/images/Spring/image-20230815163209-pmm0kxm.png" alt="image">​</p>
+<p>如果要想打破循环依赖，就需要一个中间人的参与，这个中间人就是二级缓存</p>
+<p>​<img src="/images/Spring/image-20230815163312-igny66t.png" alt="image">​</p>
+<p>‍</p>
+<p>三级缓存</p>
+<p>​<img src="/images/Spring/image-20230815164227-z9oys9k.png" alt="image">​</p>
+<p>‍</p>
+<p>‍</p>
+<p>构造方法出现的循环依赖三级缓存无法解决。</p>
+<p>解决方法：</p>
+<pre><code>添加注解@Lazy
+</code></pre>
+<p>‍</p>
+<p>‍</p>
+<h2 id="6-SpringMVC的执行流程？"><a href="#6-SpringMVC的执行流程？" class="headerlink" title="6 SpringMVC的执行流程？"></a>6 SpringMVC的执行流程？</h2><ol>
+<li>试图阶段（老旧JSP）</li>
+<li>前后端分离</li>
+</ol>
+<p>视图阶段（JSP）</p>
+<p>​<img src="/images/Spring/image-20230815165025-m9oxu2y.png" alt="image">​</p>
+<p>前后端分离阶段（接口开发，异步请求）</p>
+<p>​<img src="/images/Spring/image-20230815165215-oamjx0e.png" alt="image">​</p>
+<p>‍</p>
+<p>‍</p>
+<h2 id="7-SpringBoot的自动配置原理"><a href="#7-SpringBoot的自动配置原理" class="headerlink" title="7 SpringBoot的自动配置原理"></a>7 SpringBoot的自动配置原理</h2><p>​<img src="/images/Spring/image-20230815165448-fpcw8bt.png" alt="image">​</p>
+<p>‍</p>
+<h2 id="8-Spring框架的常见注解（Spring，SpringBoot，SpringMVC）"><a href="#8-Spring框架的常见注解（Spring，SpringBoot，SpringMVC）" class="headerlink" title="8 Spring框架的常见注解（Spring，SpringBoot，SpringMVC）"></a>8 Spring框架的常见注解（Spring，SpringBoot，SpringMVC）</h2><p>‍</p>
+<p><strong>Spring注解</strong>：</p>
+<p>|注解|说明||<br>|@Component、@Controller、@Service、@Respository|使用类上用于实例化Bean||<br>|@Autowired|使用在字段上用于根据类型依赖注入||</p>
+<table>
+<thead>
+<tr>
+<th>@Qualifier</th>
+<th>结合@Autowired一起使用用于根据名称进行依赖注入</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>@Scope</strong></td>
+<td><strong>标注Bean的作用范围</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>@Configure</strong></td>
+<td><strong>指定当前类是一个spring配置类，当创建容器时会从该类上加载注解</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>@ComponentsScan</strong></td>
+<td><strong>用于指定spring在初始化容器上要扫描的包</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>@Bean</strong></td>
+<td><strong>使用在方法上，标注将该方法的返回值存储到Spring容器中</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>@Import</strong></td>
+<td><strong>使用@Import导入的类会被Spring加载到IOC容器中</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>@Aspect、@Before、@After、@Around、@Pointcut</strong></td>
+<td><strong>用于切面编程</strong>​</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>‍</p>
+<p><strong>SpringMVC相关注解：</strong></p>
+<p>|注解|说明||<br>|@RequestMapping|用于映射请求路径，可以定义在类上和方法上。用于类上，则表示类中的所有的方法都是以该地址作为父路径||<br>|@RequestBody|注解实现接收 http 请求的 json 数据，将 json 转换为 java 对象||</p>
+<table>
+<thead>
+<tr>
+<th>@RequestParam</th>
+<th>指定请求参数的名称</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>@PathViriable</strong></td>
+<td><strong>从请求路径下中获取请求参数 (&#x2F;user&#x2F;{id}) ，传递给方法的形式参数</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>@ResponseBody</strong></td>
+<td><strong>注解实现将 controller 方法返回对象转化为 json 对象响应给客户端</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>@RequestHeader</strong></td>
+<td><strong>获取指定的请求头数据</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>@RestController</strong></td>
+<td><strong>@Controller + @ResponseBody</strong></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>‍</p>
+<h2 id="9-MyBatisz的执行流程？"><a href="#9-MyBatisz的执行流程？" class="headerlink" title="9 MyBatisz的执行流程？"></a>9 MyBatisz的执行流程？</h2><p>​<img src="/images/Spring/image-20230816145351-xdi2k5c.png" alt="image">​</p>
+<p>‍</p>
+<p>‍</p>
+<h2 id="10-Mybatis是否支持延迟加载？"><a href="#10-Mybatis是否支持延迟加载？" class="headerlink" title="10 Mybatis是否支持延迟加载？"></a>10 Mybatis是否支持延迟加载？</h2><p>Mybatis支持延迟加载，但是默认没有开启</p>
+<p>​<img src="/images/Spring/image-20230816150103-c4s3x0h.png" alt="image">​</p>
+<p>‍</p>
+<p>延迟加载的原理：</p>
+<ol>
+<li>使用CGLIB创建目标对象的代理对象</li>
+<li>当调用目标方法user.getOrderList()时，进入拦截器invoke方法，发现user.getOrderList()时null值，执行sql查询order列表</li>
+<li>把order查询上来，然后调用user.setOrderList(List<Order> orderList)，接着完成user.getOrderList()方法的调用</li>
+</ol>
+<p>​<img src="/images/Spring/image-20230816150352-gap1jjo.png" alt="image">​</p>
+<p>‍</p>
+<p>‍</p>
+<h2 id="10-Mybatis的一级、二级缓存用过吗？"><a href="#10-Mybatis的一级、二级缓存用过吗？" class="headerlink" title="10 Mybatis的一级、二级缓存用过吗？"></a>10 Mybatis的一级、二级缓存用过吗？</h2><h3 id="一级缓存"><a href="#一级缓存" class="headerlink" title="一级缓存"></a>一级缓存</h3><pre><code>基于PerpetualCache的HashMap本地缓存，其储存作用域为session，当session进行flush或者close之后，该session中的所有的cache就将清空，默认打开一级缓存
+</code></pre>
+<h3 id="二级缓存"><a href="#二级缓存" class="headerlink" title="二级缓存"></a>二级缓存</h3><pre><code>是基于namespace和mapper的作用域起作用，不是依赖于SQL session，默认采用PerpetualCache HashMap存储
+</code></pre>
+<p>注意事项：</p>
+<ol>
+<li>对于缓存数据更新机制，当某一个作用域（一级缓存session&#x2F;二级缓存Namespace)的进行了新增、修改、删除操作后，默认该作用域下所有的select中的缓存将被clear</li>
+<li>二级缓存需要缓存的数据实现Serializable接口</li>
+<li>只有会话提交或者关闭之后，一级缓存中的数据才会转移到二级缓存中</li>
+</ol>
+<p>‍</p>
+<p>‍</p>
+<p>‍</p>
+<p>‍</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">itcarrot</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2021/10/04/Java/Spring/">http://example.com/2021/10/04/Java/Spring/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">胡萝卜</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/06/04/%E9%83%A8%E7%BD%B2/Devtools/" title="热部署"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">热部署</div></div></a></div><div class="next-post pull-right"><a href="/2021/01/04/hello-world/" title="Hello World"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Hello World</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">itcarrot</div><div class="author-info__description">再苦再累不掉队，再难再险不放弃</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring"><span class="toc-number">1.</span> <span class="toc-text">Spring</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text"></span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Spring-%E6%A1%86%E6%9E%B6%E4%B8%AD%E7%9A%84%E5%8D%95%E4%BE%8Bbean%E6%98%AF%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84%E5%90%97%EF%BC%9F"><span class="toc-number">2.1.</span> <span class="toc-text">1 Spring 框架中的单例bean是线程安全的吗？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E4%BB%80%E4%B9%88%E6%98%AFAOP%EF%BC%9F"><span class="toc-number">2.2.</span> <span class="toc-text">2 什么是AOP？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-Spring%E4%B8%AD%E7%9A%84%E4%BA%8B%E5%8A%A1%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.1 Spring中的事务是如何实现的？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Spring%E4%B8%AD%E4%BA%8B%E5%8A%A1%E5%A4%B1%E6%95%88%E7%9A%84%E5%9C%BA%E6%99%AF%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%9F"><span class="toc-number">2.3.</span> <span class="toc-text">3 Spring中事务失效的场景有哪些？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Spring-%E7%9A%84bean-%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%EF%BC%9F"><span class="toc-number">2.4.</span> <span class="toc-text">4 Spring 的bean 的生命周期？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#BeanDefinition"><span class="toc-number">2.4.1.</span> <span class="toc-text">BeanDefinition</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-Spring%E4%B8%AD%E7%9A%84%E5%BE%AA%E7%8E%AF%E5%BC%95%E7%94%A8%EF%BC%9F"><span class="toc-number">2.5.</span> <span class="toc-text">5 Spring中的循环引用？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96"><span class="toc-number">2.5.1.</span> <span class="toc-text">5.1 三级缓存解决循环依赖</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-SpringMVC%E7%9A%84%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B%EF%BC%9F"><span class="toc-number">2.6.</span> <span class="toc-text">6 SpringMVC的执行流程？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-SpringBoot%E7%9A%84%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E5%8E%9F%E7%90%86"><span class="toc-number">2.7.</span> <span class="toc-text">7 SpringBoot的自动配置原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-Spring%E6%A1%86%E6%9E%B6%E7%9A%84%E5%B8%B8%E8%A7%81%E6%B3%A8%E8%A7%A3%EF%BC%88Spring%EF%BC%8CSpringBoot%EF%BC%8CSpringMVC%EF%BC%89"><span class="toc-number">2.8.</span> <span class="toc-text">8 Spring框架的常见注解（Spring，SpringBoot，SpringMVC）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-MyBatisz%E7%9A%84%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B%EF%BC%9F"><span class="toc-number">2.9.</span> <span class="toc-text">9 MyBatisz的执行流程？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-Mybatis%E6%98%AF%E5%90%A6%E6%94%AF%E6%8C%81%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%EF%BC%9F"><span class="toc-number">2.10.</span> <span class="toc-text">10 Mybatis是否支持延迟加载？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-Mybatis%E7%9A%84%E4%B8%80%E7%BA%A7%E3%80%81%E4%BA%8C%E7%BA%A7%E7%BC%93%E5%AD%98%E7%94%A8%E8%BF%87%E5%90%97%EF%BC%9F"><span class="toc-number">2.11.</span> <span class="toc-text">10 Mybatis的一级、二级缓存用过吗？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E7%BA%A7%E7%BC%93%E5%AD%98"><span class="toc-number">2.11.1.</span> <span class="toc-text">一级缓存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E7%BA%A7%E7%BC%93%E5%AD%98"><span class="toc-number">2.11.2.</span> <span class="toc-text">二级缓存</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/%E6%B6%88%E6%81%AF%E6%9C%BA%E5%88%B6%E5%85%A8%E8%A7%A3%E6%9E%90Handler/" title="消息机制全解析Handler">消息机制全解析Handler</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/Activity/" title="Activity">Activity</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/ContentProvider%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E8%80%85/" title="ContentProvider内容提供者">ContentProvider内容提供者</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/Broadcast%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6/" title="Broadcast广播机制">Broadcast广播机制</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/AsyncTask%E5%85%A8%E8%A7%A3%E6%9E%90/" title="AsyncTask全解析">AsyncTask全解析</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By itcarrot</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

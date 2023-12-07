@@ -1,0 +1,653 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>View | 胡萝卜</title><meta name="author" content="itcarrot"><meta name="copyright" content="itcarrot"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="View绘制View有三个组件：  Measure：测量视图的高低  Layout：先通过measure测量出ViewGroup宽高，ViewGroup再通过layout方法根据自身宽高来确定自身位置  Draw：绘制视图   1、View绘制前的流程入门一段时间的同学都会知道，View绘制流程就是Measure() -&gt; Laytou() -&gt; Draw()，这三大方法。没错，不过在">
+<meta property="og:type" content="article">
+<meta property="og:title" content="View">
+<meta property="og:url" content="http://example.com/2022/12/04/Android/View/index.html">
+<meta property="og:site_name" content="胡萝卜">
+<meta property="og:description" content="View绘制View有三个组件：  Measure：测量视图的高低  Layout：先通过measure测量出ViewGroup宽高，ViewGroup再通过layout方法根据自身宽高来确定自身位置  Draw：绘制视图   1、View绘制前的流程入门一段时间的同学都会知道，View绘制流程就是Measure() -&gt; Laytou() -&gt; Draw()，这三大方法。没错，不过在">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2022-12-04T10:48:34.000Z">
+<meta property="article:modified_time" content="2023-12-07T09:07:48.896Z">
+<meta property="article:author" content="itcarrot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2022/12/04/Android/View/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'View',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-12-07 17:07:48'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="胡萝卜" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="胡萝卜"><span class="site-name">胡萝卜</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">View</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-12-07T09:07:48.896Z" title="更新于 2023-12-07 17:07:48">2023-12-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Android/">Android</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="View"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="View"><a href="#View" class="headerlink" title="View"></a>View</h1><p>绘制View有三个组件：</p>
+<ol>
+<li><p>Measure：测量视图的高低</p>
+</li>
+<li><p>Layout：先通过measure测量出ViewGroup宽高，ViewGroup再通过layout方法根据自身宽高来确定自身位置</p>
+</li>
+<li><p>Draw：绘制视图</p>
+</li>
+</ol>
+<h1 id="1、View绘制前的流程"><a href="#1、View绘制前的流程" class="headerlink" title="1、View绘制前的流程"></a>1、View绘制前的流程</h1><p>入门一段时间的同学都会知道，View绘制流程就是Measure() -&gt; Laytou() -&gt; Draw()，这三大方法。没错，不过在进行这三个方法之前，系统又做了什么准备工作呢？这就是本小节解决的问题。以下的图，是贯穿全文的总结图，放在文章开头，我们一步一步分析。</p>
+<p>​<img src="https://uploadfiles.nowcoder.com/images/20231120/545613072_1700451449454/D2B5CA33BD970F64A6301FA75AE2EB22" alt="alt">​</p>
+<p>以下内容与本系列《Activity、Window、DecorView以及ViewRoot层级关系》（以下简称为《参考文档1》）一文内容重复较多，特别是源码分析，故具体源码请看参考文档1。从Activity创建到View的绘制，经过以下步骤：</p>
+<ul>
+<li>Step1：初始化PhoneWindow和WindowManager</li>
+</ul>
+<p>之前一节说过，Activity 是在 ActivityThread 的 performLaunchActivity 中进行创建的，并在attach()方法中创建了PhoneWindow，并初始化WindowManager。attach()方法详情见<code>参考文档1</code>​的第2小节。</p>
+<ul>
+<li>Step2：初始化DecorView</li>
+</ul>
+<p>系统执行完attach()方法后，会执行onCreate()方法，在onCreate()方法中执行setContentView()方法将布局xml文件解析为View并设置到DecorView里面的ContentViews控件。这里的源码也对应<code>参考文档1</code>​的第2小节。</p>
+<ul>
+<li>Step3：ViewRootImpl创建和关联DecorView</li>
+</ul>
+<p>接着在handleResumeActivity()方法中，通过WindowManager的addView()方法将DecorView添加到WindoManager里面。通过源码分析，WindowManager的addView()方法最终通过WindowManagerGlobal的实例去addView()，在 WindowManagerGlobal()方法中，会创建一个ViewRootImpl，也就是最后会把DecorView传给了ViewRootImpl中的setView()方法。ViewRootImpl是DecorView的管理者，是WindowManager与DecorView之间的连接器。源码详情见<code>参考文档1</code>​的第4小节。</p>
+<ul>
+<li>Step4：建立 PhoneWindow 和 WindowManagerService 之间的连接</li>
+</ul>
+<p>WindowManagerService是所有Window窗口的管理者，负责Window的添加删除、事件派发等。每一个Activity都有一个PhoneWindow对象，操作PhoneWindow对象进行显示等操作，都需要和WindowManagerService进行交互。在上面第三步中的ViewRootImpl的setView()方法中，会执行setView()方法，会调用 requestLayout()方法，并且通过 WindowSession 的 addToDisplay()方法 与 WindowManagerService 进行交互。WindowManagerService 会为每一个 Window 关联一个 WindowStatus。到此，我们已经把DecorView加载到Window中了。</p>
+<ul>
+<li>Step5：建立与SurfaceFlinger的链接</li>
+</ul>
+<p>SurfaceFlinger主要对图层数据进行合成，然后发送到屏幕渲染。在第4步中，WindowStatus会创建一个SurfaceSession，SurfaceSession 会在 Native 层构造一个 SurfaceComposerClient 对象，它是应用程序与 SurfaceFlinger 沟通的桥梁。</p>
+<ul>
+<li>Step6：申请Surface</li>
+</ul>
+<p>View绘制会从ViewRoot的performTraversals()，按照Measure() -&gt; Layout() -&gt; Draw()经典流程完成View绘制。不过在此之前还会执行一个重要的函数relayoutWindow()。代码如下：</p>
+<pre><code class="java">//frameworks/base/core/java/android/view/ViewRootImpl.java
+private void performTraversals() &#123;
+    relayoutResult = relayoutWindow(params, viewVisibility, insetsPending); //1
+    ...
+    int childWidthMeasureSpec = getRootMeasureSpec(mWidth, lp.width);
+    int childHeightMeasureSpec = getRootMeasureSpec(mHeight, lp.height);
+    ...
+    //执行测量流程
+    performMeasure(childWidthMeasureSpec, childHeightMeasureSpec); //2
+    ...
+    //执行布局流程
+    performLayout(lp, desiredWindowWidth, desiredWindowHeight); //3
+    ...
+    //执行绘制流程
+    performDraw(); //4
+&#125;
+</code></pre>
+<p>调用<code>[注释1]</code>​的relayoutWindow()方法，通过 WindowSession与WindowManagerService交互，即把Java层的Surface和Native层的Surface关联在一起。</p>
+<ul>
+<li>Step7：正式进入View绘制</li>
+</ul>
+<p>接下来就是正式绘制View的整体流程，即<code>[注释2-4]</code>​三步走。绘制会根视图ViewRoot的performTraversals()方法开始，从上到下遍历整个视图树，每个ViewGroup会负责通知自己的子View进行绘制，而每个子View控件则负责绘制自己。大致的工作流程图如下：</p>
+<p>​<img src="https://uploadfiles.nowcoder.com/images/20231120/545613072_1700451460462/D2B5CA33BD970F64A6301FA75AE2EB22" alt="alt">​</p>
+<p>从上面的图，可以看到有onMeasure(),onLayout(),onDraw()这三个函数，是我们在实现自定义View最常接触的三个函数，接下来以这三个函数为思路进行讲解。</p>
+<h1 id="2、View绘制-Measure（测量）"><a href="#2、View绘制-Measure（测量）" class="headerlink" title="2、View绘制 - Measure（测量）"></a>2、View绘制 - Measure（测量）</h1><h2 id="2-1-Measure源码流程"><a href="#2-1-Measure源码流程" class="headerlink" title="2.1 Measure源码流程"></a>2.1 Measure源码流程</h2><p>Measure翻译过来即是“测量”的意思，在此测量的是每个控件的宽和高。在代码层面，则是给每个View的mMeasuredWidth和mMeasuredHeight变量进行赋值。在测量时遵循：</p>
+<ul>
+<li>如果是ViewGroup，则遍历测量子View的宽高，再根据子View宽高算出自身的宽高；</li>
+<li>如果是子View，则直接测量出自身宽高；</li>
+</ul>
+<p>现在从<code>[注释2]</code>​的performMeasure()方法开始：</p>
+<pre><code class="java">//frameworks/base/core/java/android/view/ViewRootImpl.java
+private void performMeasure(int childWidthMeasureSpec, int childHeightMeasureSpec) &#123;
+    if (mView == null) &#123;
+        return;
+    &#125;
+    Trace.traceBegin(Trace.TRACE_TAG_VIEW, &quot;measure&quot;);
+    try &#123;
+        mView.measure(childWidthMeasureSpec, childHeightMeasureSpec); //5
+    &#125; finally &#123;
+        Trace.traceEnd(Trace.TRACE_TAG_VIEW);
+    &#125;
+&#125;
+</code></pre>
+<p>逻辑很清晰，可发现实际起作用的是<code>[注释5]</code>​mView.measure()方法，</p>
+<pre><code class="java">//frameworks/base/core/java/android/view/View.java
+public final void measure(int widthMeasureSpec, int heightMeasureSpec) &#123;
+    ...
+    if (forceLayout || needsLayout) &#123;
+       if (cacheIndex &lt; 0 || sIgnoreMeasureCache) &#123;
+            onMeasure(widthMeasureSpec, heightMeasureSpec); //6
+        &#125; else &#123;
+            setMeasuredDimensionRaw((int) (value &gt;&gt; 32), (int) value);
+        &#125;
+    &#125;
+    ...
+&#125;
+</code></pre>
+<p>measure()方法使用final修饰，代表不可重写。在measure()方法中会进行一系列逻辑处理后，调用<code>[注释6]</code>​的onMeasure()方法，真正的测量都在onMeasure()方法中实现。</p>
+<pre><code class="java">//frameworks/base/core/java/android/view/View.java
+ protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) &#123;
+     setMeasuredDimension(getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec),
+             getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec)); //7
+ &#125;
+</code></pre>
+<p>可以看到onMeasure()方法使用protected修饰，代表我们可以重写该方法。因此如果需要实现自己的测量逻辑，只能通过子View重写onMeasure()方法，而不能重写measure()方法。onMeasure()最后调用<code>[注释7]</code>​setMeasuredDimension()设置View的宽高信息，完成View的测量操作。</p>
+<p>看看getDefaultSize()的源码：</p>
+<pre><code class="java">public static int getDefaultSize(int size, int measureSpec) &#123;
+    int result = size;
+    //通过MeasureSpec解析获取mode与size
+    int specMode = MeasureSpec.getMode(measureSpec);
+    int specSize = MeasureSpec.getSize(measureSpec);
+
+    switch (specMode) &#123;
+    case MeasureSpec.UNSPECIFIED:
+        result = size;
+        break;
+    case MeasureSpec.AT_MOST: //8
+    case MeasureSpec.EXACTLY: //8
+        result = specSize;
+        break;
+    &#125;
+    return result;
+&#125;
+</code></pre>
+<p>这是系统设置默认的尺寸，在<code>[注释8]</code>​可以看到如果specMode是AT_MOST或者EXACTLY，则返回的就是specSize。至于 UNSPECIFIED 的情况，则会返回一个建议的最小值，这个值和子元素设置的最小值它的背景大小有关（这一段话可先看看2.2小节再回来继续看）。</p>
+<p>从一开始执行的performMeasure()到最后设置宽高的setMeasuredDimension()方法，流程都比较清晰。并且可以发现有两个贯穿整个流程的变量，widthMeasureSpec和heightMeasureSpec，理解这两个变量才是关键。</p>
+<h2 id="2-2-什么是MeasureSpec"><a href="#2-2-什么是MeasureSpec" class="headerlink" title="2.2 什么是MeasureSpec"></a>2.2 什么是MeasureSpec</h2><p>MeasureSpec是一个32位的int型数据，由两部分组成，SpecMode（测量模式，高2位） + SpecSize（测量尺寸，低30位）。将这两者打包为一个int数据可以起到节省内存的作用。有打包当然也有解包的方法：</p>
+<pre><code class="java">//获取测量模式
+public static int getMode(int measureSpec) &#123;
+    return (measureSpec &amp; MODE_MASK);
+&#125;
+//获取测量尺寸
+public static int getSize(int measureSpec) &#123;
+    return (measureSpec &amp; ~MODE_MASK);
+&#125;
+</code></pre>
+<blockquote>
+<p>名词解析：控件的<code>布局参数LayoutParams</code>​是指控件设定为match_parent或者wrap_content或具体数值之中的一种。</p>
+</blockquote>
+<h3 id="2-2-1-测量模式"><a href="#2-2-1-测量模式" class="headerlink" title="2.2.1 测量模式"></a>2.2.1 测量模式</h3><ul>
+<li>EXACTLY：确定大小，父View希望子View的大小是确定的。对应LayoutParams中的match_parent和具体数值这两种模式。检测到View所需要的精确大小，这时候View的最终大小就是SpecSize所指定的值；</li>
+<li>AT_MOST ：最大大小，父View希望子View的大小最多是specSize指定的值。对应LayoutParams中的wrap_content。View的大小不能大于父容器的大小。</li>
+<li>UNSPECIFIED ：不确定大小，父View完全依据子View的设计值来决定。系统不对View进行任何限制，要多大给多大，一般用于系统内部。</li>
+</ul>
+<p>具体详见2.2.2小节的图。</p>
+<h3 id="2-2-2-MeasureSpec如何确定"><a href="#2-2-2-MeasureSpec如何确定" class="headerlink" title="2.2.2 MeasureSpec如何确定"></a>2.2.2 MeasureSpec如何确定</h3><ul>
+<li>DecorView：通过屏幕大小和自身布局参数LayoutParams，只要将自身大小和屏幕大小相比，设置一个不超过屏幕大小的宽高和对应测量模式即可；</li>
+<li>ViewGroup和View：需要通过父布局的MeasureSpec和自身的布局参数LayoutParams确定，具体如下：</li>
+</ul>
+<p>​<img src="https://uploadfiles.nowcoder.com/images/20231120/545613072_1700451472038/D2B5CA33BD970F64A6301FA75AE2EB22" alt="alt">​</p>
+<h2 id="2-3-ViewGroup的测量"><a href="#2-3-ViewGroup的测量" class="headerlink" title="2.3 ViewGroup的测量"></a>2.3 ViewGroup的测量</h2><p>上面说过ViewGroup需要测量其包含的子View的宽高后，根据子View宽高算出自身的宽高。所以在ViewGroup中定义了measureChildren(), measureChild(), measureChildWithMargins()方法来对子视图进行测量，measureChildren（）内部实质只是循环调用measureChild()。</p>
+<pre><code class="java">//frameworks/base/core/java/android/view/ViewGroup.java
+protected void measureChildren(int widthMeasureSpec, int heightMeasureSpec) &#123;
+    final int size = mChildrenCount;
+    final View[] children = mChildren;
+    for (int i = 0; i &lt; size; ++i) &#123;
+        final View child = children[i];
+        if ((child.mViewFlags &amp; VISIBILITY_MASK) != GONE) &#123;
+            measureChild(child, widthMeasureSpec, heightMeasureSpec); //调用measureChild()对子View进行测量
+        &#125;
+    &#125;
+&#125;
+
+protected void measureChild(View child, int parentWidthMeasureSpec,
+        int parentHeightMeasureSpec) &#123;
+    //获取子视图的LayoutParams
+    final LayoutParams lp = child.getLayoutParams();
+  
+    //通过这两个参数以及子视图本身的LayoutParams来共同决定子视图的测量规格
+    final int childWidthMeasureSpec = getChildMeasureSpec(parentWidthMeasureSpec,
+            mPaddingLeft + mPaddingRight, lp.width);
+    final int childHeightMeasureSpec = getChildMeasureSpec(parentHeightMeasureSpec,
+            mPaddingTop + mPaddingBottom, lp.height);
+
+    //继续调用子View的measure()方法，子View的measure()中会回调子View的onMeasure()方法，并最终调用到setMeasuredDimension()来设置宽高
+    child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+&#125;
+</code></pre>
+<p>以上代码注释已经写的比较清楚了，关键看看getChildMeasureSpec()方法：</p>
+<pre><code class="java">//frameworks/base/core/java/android/view/ViewGroup.java
+public static int getChildMeasureSpec(int spec, int padding, int childDimension) &#123;
+    int specMode = MeasureSpec.getMode(spec);
+    int specSize = MeasureSpec.getSize(spec);
+
+    int size = Math.max(0, specSize - padding);
+
+    int resultSize = 0;
+    int resultMode = 0;
+
+    switch (specMode) &#123;
+    // Parent has imposed an exact size on us
+    case MeasureSpec.EXACTLY:
+        if (childDimension &gt;= 0) &#123;
+            resultSize = childDimension;
+            resultMode = MeasureSpec.EXACTLY;
+        &#125; else if (childDimension == LayoutParams.MATCH_PARENT) &#123;
+            // Child wants to be our size. So be it.
+            resultSize = size;
+            resultMode = MeasureSpec.EXACTLY;
+        &#125; else if (childDimension == LayoutParams.WRAP_CONTENT) &#123;
+            // Child wants to determine its own size. It can&#39;t be
+            // bigger than us.
+            resultSize = size;
+            resultMode = MeasureSpec.AT_MOST;
+        &#125;
+        break;
+
+    // Parent has imposed a maximum size on us
+    case MeasureSpec.AT_MOST: //a
+        if (childDimension &gt;= 0) &#123;
+            // Child wants a specific size... so be it
+            resultSize = childDimension;
+            resultMode = MeasureSpec.EXACTLY;
+        &#125; else if (childDimension == LayoutParams.MATCH_PARENT) &#123;
+            // Child wants to be our size, but our size is not fixed.
+            // Constrain child to not be bigger than us.
+            resultSize = size;
+            resultMode = MeasureSpec.AT_MOST; //b
+        &#125; else if (childDimension == LayoutParams.WRAP_CONTENT) &#123;
+            // Child wants to determine its own size. It can&#39;t be
+            // bigger than us.
+            resultSize = size;
+            resultMode = MeasureSpec.AT_MOST; //c
+        &#125;
+        break;
+
+    // Parent asked to see how big we want to be
+    case MeasureSpec.UNSPECIFIED:
+        if (childDimension &gt;= 0) &#123;
+            // Child wants a specific size... let him have it
+            resultSize = childDimension;
+            resultMode = MeasureSpec.EXACTLY;
+        &#125; else if (childDimension == LayoutParams.MATCH_PARENT) &#123;
+            // Child wants to be our size... find out how big it should
+            // be
+            resultSize = 0;
+            resultMode = MeasureSpec.UNSPECIFIED;
+        &#125; else if (childDimension == LayoutParams.WRAP_CONTENT) &#123;
+            // Child wants to determine its own size.... find out how
+            // big it should be
+            resultSize = 0;
+            resultMode = MeasureSpec.UNSPECIFIED;
+        &#125;
+        break;
+    &#125;
+    return MeasureSpec.makeMeasureSpec(resultSize, resultMode);
+&#125;
+</code></pre>
+<p>代码逻辑也非常清楚，首先根据父控件的specMode模式，结合子控件的布局参数LayoutParams，最后得到子控件的MeasureSpec属性。有一点需要注意，如果父控件的MeasureSpec是AT_MOST，对应<code>[注释a]</code>​，无论子控件的布局参数是WRAP_CONTENT还是MATCH_PARENT，最终获得的子控件的specMode模式都是AT_MOST，即<code>[注释b-c]</code>​。因此，一般的解决方法是当布局参数是WRAP_CONTENT时，在onMeasure()方法里手动指定一下默认的宽和高：</p>
+<pre><code class="java">@Override
+  protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) &#123;
+      super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+      int widthSpecMode = MeasureSpec.getMode(widthMeasureSpec);
+      int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
+      int widthSpecSize=MeasureSpec.getSize(widthMeasureSpec);
+      int heightSpecSize=MeasureSpec.getSize(heightMeasureSpec);
+      if(widthSpecMode==MeasureSpec.AT_MOST&amp;&amp;heightSpecMode==MeasureSpec.AT_MOST)&#123;
+          setMeasuredDimension(400,400);
+      &#125;else if(widthSpecMode==MeasureSpec.AT_MOST)&#123;
+          setMeasuredDimension(400,heightSpecSize);
+      &#125;else if(heightSpecMode==MeasureSpec.AT_MOST)&#123;
+          setMeasuredDimension(widthSpecSize,400);
+      &#125;
+  &#125;
+</code></pre>
+<h2 id="2-4-Measure总结"><a href="#2-4-Measure总结" class="headerlink" title="2.4 Measure总结"></a>2.4 Measure总结</h2><ul>
+<li>measure过程主要就是从顶层父View向子View递归调用view.measure方法进行测量（measure()中又回调onMeasure()方法）的过程;</li>
+<li>如果是ViewGroup则需执行要measure()并重写onMeasure()方法，在该方法中定义自己的测量方式，接着调用maesureChildren()方法遍历测量子View的宽高，最终根据子View宽高确定自己的宽高；</li>
+<li>ViewGroup类提供了measureChild()，measureChildren()和measureChildWithMargins()方法，简化了父子View的尺寸计算；</li>
+<li>如果是子View则调用measure() -》 onMeasure()方法完成自身的测量即可；</li>
+<li>View的measure()方法是final修饰的，不能重写，只能重写onMeasure()方法完成自己的测量，且重写时不建议把宽高设置为死值；</li>
+<li>使用View的getMeasuredWidth()和getMeasuredHeight()方法来获取View测量的宽高，必须保证这两个方法在onMeasure流程之后被调用才能返回有效值。</li>
+</ul>
+<p>流程图（摘抄于参考文档2）如下： <img src="https://uploadfiles.nowcoder.com/images/20230128/545613072_1674904689454/D2B5CA33BD970F64A6301FA75AE2EB22" alt="alt">​</p>
+<h1 id="3、View绘制-Layout（布局）"><a href="#3、View绘制-Layout（布局）" class="headerlink" title="3、View绘制 - Layout（布局）"></a>3、View绘制 - Layout（布局）</h1><h2 id="3-1-Layout源码流程"><a href="#3-1-Layout源码流程" class="headerlink" title="3.1 Layout源码流程"></a>3.1 Layout源码流程</h2><p>将所有的View的宽高都计算好之后，就开始将所有的View进行布局了，即在Window摆放好所有View的位置，View的布局主要是通过确定上下左右四个关键点来确定其位置。值得一说的是，测量时，先测量子View的宽高，再测量父View的宽高。但是在布局时顺序则相反，是父View先确定自身的布局，再确认子View的布局。还是从<code>[注释3]</code>​的performLayout()方法开始看：</p>
+<pre><code class="java">//frameworks/base/core/java/android/view/ViewRootImpl.java
+private void performLayout(WindowManager.LayoutParams lp, int desiredWindowWidth,
+         int desiredWindowHeight) &#123;
+     mLayoutRequested = false;
+     mScrollMayChange = true;
+     mInLayout = true;
+
+     final View host = mView;
+     if (host == null) &#123;
+         return;
+     &#125;
+         Trace.traceBegin(Trace.TRACE_TAG_VIEW, &quot;layout&quot;);
+     try &#123;
+         ...
+         host.layout(0, 0, host.getMeasuredWidth(), host.getMeasuredHeight()); //9
+         ...
+     &#125; finally &#123;
+         Trace.traceEnd(Trace.TRACE_TAG_VIEW);
+     &#125;
+     mInLayout = false;
+ &#125;
+</code></pre>
+<p>​<code>[注释9]</code>​的host其实是View类，因此会调用View.java里面的layout()方法。</p>
+<pre><code class="java">//frameworks/base/core/java/android/view/View.java
+public void layout(int l, int t, int r, int b) &#123;  
+
+    // 当前视图的四个顶点
+    int oldL = mLeft;  
+    int oldT = mTop;  
+    int oldB = mBottom;  
+    int oldR = mRight;  
+
+    // setFrame（） / setOpticalFrame（）：确定View自身的位置
+    // 即初始化四个顶点的值，然后判断当前View大小和位置是否发生了变化并返回  
+ boolean changed = isLayoutModeOptical(mParent) ?
+            setOpticalFrame(l, t, r, b) : setFrame(l, t, r, b); //10
+
+    //如果视图的大小和位置发生变化，会调用onLayout（）
+    if (changed || (mPrivateFlags &amp; PFLAG_LAYOUT_REQUIRED) == PFLAG_LAYOUT_REQUIRED) &#123;  
+        // onLayout（）：确定该View所有的子View在父容器的位置   
+        onLayout(changed, l, t, r, b);      //11
+        ...
+    &#125;
+    ...
+&#125;
+</code></pre>
+<p>上面代码有几个函数需要了解：</p>
+<ul>
+<li>setFrame()：确定View自身位置；</li>
+<li>setOpticalFrame()：也是确定View自身位置，其内部也是通过调用setFrame()来实现；</li>
+<li>onLayout()：确认该View里面的子View在父容器的位置，用protected修饰，在View.java文件里的onLayout()只是个空函数，需要子类进行重写。</li>
+</ul>
+<h2 id="3-2-LinearLayout的onLayout"><a href="#3-2-LinearLayout的onLayout" class="headerlink" title="3.2 LinearLayout的onLayout()"></a>3.2 LinearLayout的onLayout()</h2><p>如果当前的View是一个子View，则不需要重写onLayout()。但如果是一个ViewGroup，则先执行layout()方法 –〉setFrame()方法确定自己的位置，再通过重写onLayout()，其中的关键是循环调用child.layout()方法来确定子View在当前父容器的位置。我们看看LinearLayout的onLayout()：</p>
+<pre><code class="java">//frameworks/base/core/java/android/widget/LinearLayout.java
+ @Override
+ protected void onLayout(boolean changed, int l, int t, int r, int b) &#123;
+     if (mOrientation == VERTICAL) &#123;
+         layoutVertical(l, t, r, b);  //如果是垂直布局，则调用layoutVertical()
+     &#125; else &#123;
+         layoutHorizontal(l, t, r, b);
+     &#125;
+ &#125;
+
+ void layoutVertical(int left, int top, int right, int bottom) &#123;
+     final int paddingLeft = mPaddingLeft;
+     int childTop;
+     int childLeft;
+     //计算子View个数
+     final int count = getVirtualChildCount();
+     ...
+     for (int i = 0; i &lt; count; i++) &#123;
+        final View child = getVirtualChildAt(i);
+        if (child == null) &#123;
+            childTop += measureNullChild(i);
+        &#125; else if (child.getVisibility() != GONE) &#123;
+            final int childWidth = child.getMeasureWidth();
+            final int childHeight = child.getMeasuredHeight();
+
+            final LinearLayout.LayoutParams lp = 
+                    (LinearLayout.LayoutParams) child.getLayoutParams();
+            ...
+            if (hasDividerBeforeChildAt(i)) &#123;
+                childTop += mDividerHeight;
+            &#125;
+
+            childTop += lp.topMargin;
+            // 为子元素确定对应的位置
+            setChildFrame(child, childLeft, childTop + getLocationOffset(child), childWidth, childHeight); //12
+            // childTop会逐渐增大，意味着后面的子元素会被放置在靠下的位置
+            childTop += childHeight + lp.bottomMargin + getNextLocationOffset(child);
+
+            i += getChildrenSkipCount(child,i)
+        &#125;
+    &#125;
+ &#125;
+
+ private void setChildFrame(View child, int left, int top, int width, int height) &#123;
+     child.layout(left, top, left + width, top + height); //13
+ &#125;
+</code></pre>
+<p>如果LinearLayout是垂直布局，则调用layoutVertical()。接着计算子View的个数，循环调用<code>[注释12]</code>​的setChildFrame()方法来确定子View在父容器的位置。从<code>[注释13]</code>​可以知道setChildFrame()方法其实就是调用子View的layout()方法。而子View会继续调用setFrame()方法确定自己的位置，在执行onLayout()方法，上面说过在View.java文件里的onLayout()只是个空函数，所以此时不会有具体实现。</p>
+<h2 id="3-3-Layout流程图"><a href="#3-3-Layout流程图" class="headerlink" title="3.3 Layout流程图"></a>3.3 Layout流程图</h2><p>看看Layout的流程图加深理解(抄录于参考文档2): <img src="https://uploadfiles.nowcoder.com/images/20230128/545613072_1674904678253/D2B5CA33BD970F64A6301FA75AE2EB22" alt="alt">​</p>
+<h1 id="4、View绘制-Draw（绘制）"><a href="#4、View绘制-Draw（绘制）" class="headerlink" title="4、View绘制 - Draw（绘制）"></a>4、View绘制 - Draw（绘制）</h1><h2 id="4-1-Draw源码流程"><a href="#4-1-Draw源码流程" class="headerlink" title="4.1 Draw源码流程"></a>4.1 Draw源码流程</h2><p>每个View的宽高和位置都确定好后，就开始最后的绘制了，从<code>[注释4]</code>​performDraw()开始看：</p>
+<pre><code class="java">//frameworks/base/core/java/android/view/ViewRootImpl.java
+private void performDraw() &#123;
+    try &#123;
+        //执行draw()
+        boolean canUseAsync = draw(fullRedrawNeeded);
+    &#125; finally &#123;
+        mIsDrawing = false;
+        Trace.traceEnd(Trace.TRACE_TAG_VIEW);
+    &#125;
+&#125;
+
+private void draw(boolean fullRedrawNeeded) &#123;
+    ...
+    //执行drawSoftware()
+    if (!drawSoftware(surface, mAttachInfo, xOffest, yOffset, 
+    scalingRequired, dirty)) &#123;
+        return;
+    &#125;
+    ...
+&#125;
+
+private boolean drawSoftware(Surface surface, AttachInfo attachInfo, 
+int xoff, int yoff, boolean scallingRequired, Rect dirty) &#123;
+    try &#123;
+        //最终执行了子View的draw()方法
+        mView.draw(canvas);
+    &#125; finally &#123;
+        if (!attachInfo.mSetIgnoreDirtyState) &#123;
+            // Only clear the flag if it was not set during the mView.draw() call
+            attachInfo.mIgnoreDirtyState = false;
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<h2 id="4-2-Draw的步骤"><a href="#4-2-Draw的步骤" class="headerlink" title="4.2 Draw的步骤"></a>4.2 Draw的步骤</h2><p>通过源码可以追溯到，最终执行到了View.java里面的draw()方法。</p>
+<pre><code class="java">    //frameworks/base/core/java/android/view/View.java
+    public void draw(Canvas canvas)
+    &#123;
+        /*
+         * Draw traversal performs several drawing steps which must be executed
+         * in the appropriate order:
+         *
+         *      1. Draw the background
+         *      2. If necessary, save the canvas&#39; layers to prepare for fading
+         *      3. Draw view&#39;s content
+         *      4. Draw children
+         *      5. If necessary, draw the fading edges and restore layers
+         *      6. Draw decorations (scrollbars for instance)
+         */
+
+        // Step 1, draw the background, if needed
+        int saveCount;
+
+        if (!dirtyOpaque) &#123;
+            drawBackground(canvas);
+        &#125;
+
+        // skip step 2 &amp; 5 if possible (common case)
+        final int viewFlags = mViewFlags;
+        boolean horizontalEdges =(viewFlags &amp; FADING_EDGE_HORIZONTAL) != 0;
+        boolean verticalEdges =(viewFlags &amp; FADING_EDGE_VERTICAL) != 0;
+        if (!verticalEdges &amp;&amp; !horizontalEdges) &#123;
+            // Step 3, draw the content
+            if (!dirtyOpaque) onDraw(canvas);
+
+            // Step 4, draw the children
+            dispatchDraw(canvas);
+
+            drawAutofilledHighlight(canvas);
+
+            // Overlay is part of the content and draws beneath Foreground
+            if (mOverlay != null &amp;&amp; !mOverlay.isEmpty()) &#123;
+                mOverlay.getOverlayView().dispatchDraw(canvas);
+            &#125;
+
+            // Step 6, draw decorations (foreground, scrollbars)
+            onDrawForeground(canvas);
+
+            // Step 7, draw the default focus highlight
+            drawDefaultFocusHighlight(canvas);
+
+            if (debugDraw()) &#123;
+                debugDrawFocus(canvas);
+            &#125;
+
+            // we&#39;re done...
+            return;
+        &#125;
+    &#125;
+</code></pre>
+<p>以上的源码里的官方注释，draw()方法有以下步骤：</p>
+<ol>
+<li>绘制View的背景；</li>
+<li>如果有必要的话，保存画布的图层以准备fading；</li>
+<li>绘制View的内容，即执行关键函数<code>onDraw()</code>​;</li>
+<li>绘制子View；</li>
+<li>如果有必要的话，绘制View的fading边缘并恢复图层；</li>
+<li>绘制View的装饰（比如滚动条等等）</li>
+<li>绘制默认焦点高亮</li>
+</ol>
+<p>无论是View还是ViewGroup，绘制的流程都是如此，还有两点需要了解：</p>
+<ul>
+<li>在ViewGroup中，实现了dispatchDraw()方法，而子View是不需要实现该方法的；</li>
+<li>自定义View时，一般需要重写onDraw()方法，以绘制自己想要的样式，自定义View可见本系列《自定义View》一文。</li>
+</ul>
+<h2 id="4-3-Draw的流程图"><a href="#4-3-Draw的流程图" class="headerlink" title="4.3 Draw的流程图"></a>4.3 Draw的流程图</h2><p>看看Draw()的流程图加深理解(抄录于参考文档2): <img src="https://uploadfiles.nowcoder.com/images/20230128/545613072_1674904661835/D2B5CA33BD970F64A6301FA75AE2EB22" alt="alt">​</p>
+<h1 id="5、总结"><a href="#5、总结" class="headerlink" title="5、总结"></a>5、总结</h1><ul>
+<li>View的绘制有三大经典步骤：测量-布局-绘制，如果需要自定义View，可能需要重写onMeasure()方法，onLayout()方法，onDraw()方法；</li>
+<li>测量时，先测量子View再根据子View大小，计算出父View的大小；</li>
+<li>布局时，先布局好父View的位置，再布局子View的位置；</li>
+<li>绘制时，先绘制背景，再绘制父View，最后绘制子View；</li>
+</ul>
+<p>‍</p>
+<h3 id="6-为什么onCreate获取不到View的宽高"><a href="#6-为什么onCreate获取不到View的宽高" class="headerlink" title="6 为什么onCreate获取不到View的宽高"></a>6 为什么onCreate获取不到View的宽高</h3><p>Activity在执行完oncreate，onResume之后才创建ViewRootImpl,ViewRootImpl进行View的绘制工作</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">itcarrot</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2022/12/04/Android/View/">http://example.com/2022/12/04/Android/View/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">胡萝卜</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/12/04/Android/%E6%B6%88%E6%81%AF%E6%9C%BA%E5%88%B6%E5%85%A8%E8%A7%A3%E6%9E%90%EF%BC%88%E4%B8%8B%EF%BC%89/" title="事件分发机制（下）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">事件分发机制（下）</div></div></a></div><div class="next-post pull-right"><a href="/2022/10/04/%E9%83%A8%E7%BD%B2/%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/" title="单点登录"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">单点登录</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">itcarrot</div><div class="author-info__description">再苦再累不掉队，再难再险不放弃</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#View"><span class="toc-number">1.</span> <span class="toc-text">View</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1%E3%80%81View%E7%BB%98%E5%88%B6%E5%89%8D%E7%9A%84%E6%B5%81%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">1、View绘制前的流程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2%E3%80%81View%E7%BB%98%E5%88%B6-Measure%EF%BC%88%E6%B5%8B%E9%87%8F%EF%BC%89"><span class="toc-number">3.</span> <span class="toc-text">2、View绘制 - Measure（测量）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-Measure%E6%BA%90%E7%A0%81%E6%B5%81%E7%A8%8B"><span class="toc-number">3.1.</span> <span class="toc-text">2.1 Measure源码流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E4%BB%80%E4%B9%88%E6%98%AFMeasureSpec"><span class="toc-number">3.2.</span> <span class="toc-text">2.2 什么是MeasureSpec</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-1-%E6%B5%8B%E9%87%8F%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.2.1.</span> <span class="toc-text">2.2.1 测量模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-2-MeasureSpec%E5%A6%82%E4%BD%95%E7%A1%AE%E5%AE%9A"><span class="toc-number">3.2.2.</span> <span class="toc-text">2.2.2 MeasureSpec如何确定</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-ViewGroup%E7%9A%84%E6%B5%8B%E9%87%8F"><span class="toc-number">3.3.</span> <span class="toc-text">2.3 ViewGroup的测量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4-Measure%E6%80%BB%E7%BB%93"><span class="toc-number">3.4.</span> <span class="toc-text">2.4 Measure总结</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3%E3%80%81View%E7%BB%98%E5%88%B6-Layout%EF%BC%88%E5%B8%83%E5%B1%80%EF%BC%89"><span class="toc-number">4.</span> <span class="toc-text">3、View绘制 - Layout（布局）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-Layout%E6%BA%90%E7%A0%81%E6%B5%81%E7%A8%8B"><span class="toc-number">4.1.</span> <span class="toc-text">3.1 Layout源码流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-LinearLayout%E7%9A%84onLayout"><span class="toc-number">4.2.</span> <span class="toc-text">3.2 LinearLayout的onLayout()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-Layout%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="toc-number">4.3.</span> <span class="toc-text">3.3 Layout流程图</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4%E3%80%81View%E7%BB%98%E5%88%B6-Draw%EF%BC%88%E7%BB%98%E5%88%B6%EF%BC%89"><span class="toc-number">5.</span> <span class="toc-text">4、View绘制 - Draw（绘制）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-Draw%E6%BA%90%E7%A0%81%E6%B5%81%E7%A8%8B"><span class="toc-number">5.1.</span> <span class="toc-text">4.1 Draw源码流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-Draw%E7%9A%84%E6%AD%A5%E9%AA%A4"><span class="toc-number">5.2.</span> <span class="toc-text">4.2 Draw的步骤</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-Draw%E7%9A%84%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="toc-number">5.3.</span> <span class="toc-text">4.3 Draw的流程图</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5%E3%80%81%E6%80%BB%E7%BB%93"><span class="toc-number">6.</span> <span class="toc-text">5、总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E4%B8%BA%E4%BB%80%E4%B9%88onCreate%E8%8E%B7%E5%8F%96%E4%B8%8D%E5%88%B0View%E7%9A%84%E5%AE%BD%E9%AB%98"><span class="toc-number">6.0.1.</span> <span class="toc-text">6 为什么onCreate获取不到View的宽高</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/%E6%B6%88%E6%81%AF%E6%9C%BA%E5%88%B6%E5%85%A8%E8%A7%A3%E6%9E%90Handler/" title="消息机制全解析Handler">消息机制全解析Handler</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/Activity/" title="Activity">Activity</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/ContentProvider%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E8%80%85/" title="ContentProvider内容提供者">ContentProvider内容提供者</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/Broadcast%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6/" title="Broadcast广播机制">Broadcast广播机制</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/AsyncTask%E5%85%A8%E8%A7%A3%E6%9E%90/" title="AsyncTask全解析">AsyncTask全解析</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By itcarrot</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

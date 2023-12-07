@@ -1,0 +1,575 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Intent | 胡萝卜</title><meta name="author" content="itcarrot"><meta name="copyright" content="itcarrot"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Intent1、什么是IntentIntent，中文可翻译为“意图”，可用于Android同个应用程序中各个组件之间的交互，或者不同应用程序之间的交互。可以用来表明当前组件的思想和意图，比如想执行某个动作，想发送某些数据等等。每个组件都有不同的启动方法：  Activity：可以调用startActivity() 或 startActivityForResult() 传递 Intent来打开新的A">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Intent">
+<meta property="og:url" content="http://example.com/2022/12/04/Android/Intent/index.html">
+<meta property="og:site_name" content="胡萝卜">
+<meta property="og:description" content="Intent1、什么是IntentIntent，中文可翻译为“意图”，可用于Android同个应用程序中各个组件之间的交互，或者不同应用程序之间的交互。可以用来表明当前组件的思想和意图，比如想执行某个动作，想发送某些数据等等。每个组件都有不同的启动方法：  Activity：可以调用startActivity() 或 startActivityForResult() 传递 Intent来打开新的A">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2022-12-04T10:48:34.000Z">
+<meta property="article:modified_time" content="2023-12-07T09:07:11.604Z">
+<meta property="article:author" content="itcarrot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2022/12/04/Android/Intent/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Intent',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-12-07 17:07:11'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="胡萝卜" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="胡萝卜"><span class="site-name">胡萝卜</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Intent</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-12-07T09:07:11.604Z" title="更新于 2023-12-07 17:07:11">2023-12-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Android/">Android</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Intent"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Intent"><a href="#Intent" class="headerlink" title="Intent"></a>Intent</h1><h1 id="1、什么是Intent"><a href="#1、什么是Intent" class="headerlink" title="1、什么是Intent"></a>1、什么是Intent</h1><p>Intent，中文可翻译为“意图”，可用于Android同个应用程序中各个组件之间的交互，或者不同应用程序之间的交互。可以用来表明当前组件的思想和意图，比如想执行某个动作，想发送某些数据等等。每个组件都有不同的启动方法：</p>
+<ul>
+<li>Activity：可以调用startActivity() 或 startActivityForResult() 传递 Intent来打开新的Activity；</li>
+<li>Service：可以调用startService()传递 Intent 来启动服务，也可通过 bindService() 传递 Intent 来绑定到该服务；</li>
+<li>Broadcast，可以调用sendBroadcast()、sendOrderedBroadcast() 或 sendStickyBroadcast() 等方法传递 Intent 来发起广播；</li>
+</ul>
+<p>Intent分为显式Intent和隐式Intent，我们以打开新的Activity为例进行讲解。</p>
+<h2 id="1-1-显示Intent"><a href="#1-1-显示Intent" class="headerlink" title="1.1 显示Intent"></a>1.1 显示Intent</h2><p>显式指定意图，系统就会根据我们指定的意图，打开我们想打开的Activity。Intent有如下构造函数：Intent(Context packageContext, Class&lt;?&gt; cls)。其中第二个参数就是指定想启动的Activity。</p>
+<pre><code class="java">Intent intent = new Intent(this, SecondActivity.class);  
+startActivity(intent); 
+</code></pre>
+<p>通过上面两行代码，我们可以显式指定打开SecondActivity.class。</p>
+<h2 id="1-2-隐式Intent"><a href="#1-2-隐式Intent" class="headerlink" title="1.2 隐式Intent"></a>1.2 隐式Intent</h2><p>不指定特定的意图，而是通过清单文件里，每个Activity节点下事先配置好的（也就是“Intent过滤器”），由系统根据我们设定的Intent，从系统所有Activity中选出最符合的我们要求的Activity。先看看例子：</p>
+<pre><code class="java">// 清单文件中 XuruiActivity 提前声明好如下：
+    &lt;activity android:name=&quot;.XuruiActivity&quot;&gt;
+        &lt;intent-filter&gt;
+            &lt;action android:name=&quot;com.example.android.xuruitest&quot;/&gt;
+            &lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;
+            &lt;category android:name=&quot;com.example.android.xuruicategory&quot;/&gt;
+        &lt;/intent-filter&gt;
+    &lt;/activity&gt;
+</code></pre>
+<pre><code class="java">// 代码调用
+    Intent intent = new Intent();
+    intent.setAction(com.example.android.xuruitest);
+    intent.addCategory(com.example.android.xuruicategory);
+    startActivity(intent); //1
+</code></pre>
+<p>执行 [注释1]的代码后，系统会发现XuruiActivity的所设定的内容，和当前Intent所设定的内容最匹配，系统就会打开XuruiActivity，但这个过程中，我们并没有显式的指出打开XuruiActivity，而是通过设置了一些特定条件进行匹配，如“action”，“category”等，从而隐式地打开了XuruiActivity。</p>
+<h2 id="1-3-Intent的组成部分"><a href="#1-3-Intent的组成部分" class="headerlink" title="1.3 Intent的组成部分"></a>1.3 Intent的组成部分</h2><p>“action”，“category”都是Intent的组成部分。为了更好的理解隐式Intent，需要了解一个Intent由几部分组成：</p>
+<ul>
+<li>componentName：目的组件</li>
+<li>action（动作）：用来表现意图的行动</li>
+<li>category（类别）：用来表现动作的类别</li>
+<li>data（数据）：表示与动作要操纵的数据</li>
+<li>type（数据类型）：对于data范例的描写</li>
+<li>extras（扩展信息）：扩展信息</li>
+<li>Flags（标志位）：期望这个意图的运行模式</li>
+</ul>
+<h3 id="1-3-1-componentName"><a href="#1-3-1-componentName" class="headerlink" title="1.3.1 componentName"></a>1.3.1 componentName</h3><p>指定Intent目标组件的类名。可以这么记得，如果直接指定了componentName，那就是显式Intent。我们可以通过setComponent()、setClass()、setClassName()等方法指定：</p>
+<pre><code class="java">// 1、Intent构造
+Intent intent = new Intent(this, SecondActivity.class);  
+startActivity(intent); 
+
+// 2、setComponent()方法
+ComponentName componentName = new ComponentName(this, SecondActivity.class);  //2
+ComponentName componentName = new ComponentName(this, &quot;com.example.android.SecondActivity&quot;);  //3 
+ComponentName componentName = new ComponentName(this.getPackageName(), &quot;com.example.android.SecondActivity&quot;);  //4 
+  
+Intent intent = new Intent();  
+intent.setComponent(componentName);  
+startActivity(intent); 
+
+// 3、setClass/setClassName方法
+Intent intent = new Intent();  
+  
+intent.setClass(this, SecondActivity.class);  
+intent.setClassName(this, &quot;com.example.android.SecondActivity&quot;);  
+intent.setClassName(this.getPackageName(), &quot;com.example.android.SecondActivity&quot;);  
+      
+startActivity(intent);  
+</code></pre>
+<p>我们看看[注释2-4]这三种方式：</p>
+<ul>
+<li>[注释2]：this是当前Activity，直接写类名，则该Activity必须在同个包名内；</li>
+<li>[注释3]：this是当前Activity，类名包括包名，则可以在当前包跳转到其他包的Activity；</li>
+<li>[注释4]：this是当前Activity所在的应用程序，类名包括包名，则可以在当前包跳转到其他包的Activity；</li>
+</ul>
+<p>在可以使用应用的Context代替Activity的Context时，都推荐使用应用的Context，且Activity名称前面加上包名可以打破同个包内的限制，所以推荐使用[注释4]的方式。</p>
+<h3 id="1-3-2-action"><a href="#1-3-2-action" class="headerlink" title="1.3.2 action"></a>1.3.2 action</h3><p>用来表示意图的行动，一个Intent只能有一个Action。以下是一些比较常见的Action。所有的Action可以在<a target="_blank" rel="noopener" href="https://www.apiref.com/android-zh/android/content/Intent.html">Android开发手册-Intent</a> 查看。</p>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ACTION_MAIN</td>
+<td>Android 的程序入口</td>
+</tr>
+<tr>
+<td>ACTION_VIEW</td>
+<td>显示指定数据</td>
+</tr>
+<tr>
+<td>ACTION_EDIT</td>
+<td>编辑指定数据</td>
+</tr>
+<tr>
+<td>ACTION_DIAL</td>
+<td>显示拨号面板</td>
+</tr>
+<tr>
+<td>ACTION_CALL</td>
+<td>直接呼叫 Data 中所带的号码</td>
+</tr>
+<tr>
+<td>ACTION_ANSWER</td>
+<td>接听来电</td>
+</tr>
+<tr>
+<td>ACTION_SEND</td>
+<td>向其他人发送数据（例如：彩信&#x2F;email）</td>
+</tr>
+</tbody></table>
+<p>打开手机的拨号界面的代码可以这么写：</p>
+<pre><code class="java">    Intent intent=new Intent();
+    intent.setAction(Intent.ACTION_DIAL);
+    intent.setData(Uri.parse(&quot;tel:1234567&quot;));
+    startActivity(intent);
+</code></pre>
+<h3 id="1-3-3-category"><a href="#1-3-3-category" class="headerlink" title="1.3.3 category"></a>1.3.3 category</h3><p>用来表示动作的类别，一个Intent可以有多个category，类别越多，代表动作越具体，意图越明确。</p>
+<h3 id="1-3-4-data"><a href="#1-3-4-data" class="headerlink" title="1.3.4 data"></a>1.3.4 data</h3><p>清单文件里标签具体如下：</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>scheme</td>
+<td>协议</td>
+</tr>
+<tr>
+<td>host</td>
+<td>主机</td>
+</tr>
+<tr>
+<td>port</td>
+<td>端口</td>
+</tr>
+<tr>
+<td>path</td>
+<td>用来匹配完整的路径</td>
+</tr>
+<tr>
+<td>pathPrefix</td>
+<td>用来匹配路径的开头部分</td>
+</tr>
+<tr>
+<td>pathPattern</td>
+<td>用表达式来匹配整个路径</td>
+</tr>
+<tr>
+<td>mimeType</td>
+<td>用来匹配数据类型或MIME类型</td>
+</tr>
+</tbody></table>
+<p>举个例子：</p>
+<pre><code class="java">&lt;data android:scheme=&quot;http&quot;  android:host=&quot;www.baidu.com&quot;/&gt;
+</code></pre>
+<p>系统内置的几个 Data 属性常量：</p>
+<table>
+<thead>
+<tr>
+<th>协议</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>tel:</td>
+<td>号码数据格式，后跟电话号码</td>
+</tr>
+<tr>
+<td>mailto:</td>
+<td>邮件数据格式，后跟邮件收件人地址</td>
+</tr>
+<tr>
+<td>smsto:</td>
+<td>短信数据格式，后跟短信接收号码</td>
+</tr>
+<tr>
+<td>file:&#x2F;&#x2F;&#x2F;</td>
+<td>文件数据格式，后跟文件路径。注意必须是三根斜杠 &#x2F;&#x2F;&#x2F;</td>
+</tr>
+<tr>
+<td>content:&#x2F;&#x2F;</td>
+<td>内容数据格式，后跟需要读取的内容。ContentProvider 特有的格式</td>
+</tr>
+</tbody></table>
+<h3 id="1-3-5-type"><a href="#1-3-5-type" class="headerlink" title="1.3.5 type"></a>1.3.5 type</h3><p>type 属性用于指定 data 所制定的 Uri 对应的 MIME 类型，通常应用于调用系统 App，比如实现查看文件（文本、图片、音频或者视频等），通过指定文件的 MIME 类型，可以让系统知道用什么程序打开该文件。</p>
+<p><strong>常用的 MIME 类型</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>文件格式</th>
+<th>对应的MIME类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>.bmp</td>
+<td>image&#x2F;bmp</td>
+</tr>
+<tr>
+<td>.gif</td>
+<td>image&#x2F;gif</td>
+</tr>
+<tr>
+<td>.png</td>
+<td>image&#x2F;png</td>
+</tr>
+<tr>
+<td>.tif .tiff</td>
+<td>image&#x2F;tiff</td>
+</tr>
+<tr>
+<td>.jpe .jpeg .jpg</td>
+<td>image&#x2F;jpeg</td>
+</tr>
+<tr>
+<td>.txt</td>
+<td>text&#x2F;plain</td>
+</tr>
+<tr>
+<td>.xml</td>
+<td>text&#x2F;xml</td>
+</tr>
+<tr>
+<td>.html</td>
+<td>text&#x2F;html</td>
+</tr>
+<tr>
+<td>.css</td>
+<td>text&#x2F;css</td>
+</tr>
+<tr>
+<td>.js</td>
+<td>text&#x2F;javascript</td>
+</tr>
+<tr>
+<td>.mht .mhtml</td>
+<td>message&#x2F;rfc822</td>
+</tr>
+<tr>
+<td>.doc</td>
+<td>application&#x2F;msword</td>
+</tr>
+<tr>
+<td>.docx</td>
+<td>application&#x2F;vnd.openxmlformats-officedocument.wordprocessingml.document</td>
+</tr>
+<tr>
+<td>.rtf</td>
+<td>application&#x2F;rtf</td>
+</tr>
+<tr>
+<td>.xls</td>
+<td>application&#x2F;vnd.ms-excel application&#x2F;x-excel</td>
+</tr>
+<tr>
+<td>.xlsx</td>
+<td>application&#x2F;vnd.openxmlformats-officedocument.spreadsheetml.sheet</td>
+</tr>
+<tr>
+<td>.ppt</td>
+<td>application&#x2F;vnd.ms-powerpoint</td>
+</tr>
+<tr>
+<td>.pptx</td>
+<td>application&#x2F;vnd.openxmlformats-officedocument.presentationml.presentation</td>
+</tr>
+<tr>
+<td>.pps</td>
+<td>application&#x2F;vnd.ms-powerpoint</td>
+</tr>
+<tr>
+<td>.ppsx</td>
+<td>application&#x2F;vnd.openxmlformats-officedocument.presentationml.slideshow</td>
+</tr>
+<tr>
+<td>.pdf</td>
+<td>application&#x2F;pdf</td>
+</tr>
+<tr>
+<td>.swf</td>
+<td>application&#x2F;x-shockwave-flash</td>
+</tr>
+<tr>
+<td>.dll</td>
+<td>application&#x2F;x-msdownload</td>
+</tr>
+<tr>
+<td>.exe</td>
+<td>application&#x2F;octet-stream</td>
+</tr>
+<tr>
+<td>.msi</td>
+<td>application&#x2F;octet-stream</td>
+</tr>
+<tr>
+<td>.chm</td>
+<td>application&#x2F;octet-stream</td>
+</tr>
+<tr>
+<td>.cab</td>
+<td>application&#x2F;octet-stream</td>
+</tr>
+<tr>
+<td>.ocx</td>
+<td>application&#x2F;octet-stream</td>
+</tr>
+<tr>
+<td>.rar</td>
+<td>application&#x2F;octet-stream</td>
+</tr>
+<tr>
+<td>.tar</td>
+<td>application&#x2F;x-tar</td>
+</tr>
+<tr>
+<td>.tgz</td>
+<td>application&#x2F;x-compressed</td>
+</tr>
+<tr>
+<td>.zip</td>
+<td>application&#x2F;x-zip-compressed</td>
+</tr>
+<tr>
+<td>.z</td>
+<td>application&#x2F;x-compress</td>
+</tr>
+<tr>
+<td>.wav</td>
+<td>audio&#x2F;wav</td>
+</tr>
+<tr>
+<td>.wma</td>
+<td>audio&#x2F;x-ms-wma</td>
+</tr>
+<tr>
+<td>.wmv</td>
+<td>video&#x2F;x-ms-wmv</td>
+</tr>
+<tr>
+<td>.mp3 .mp2 .mpe .mpeg .mpg</td>
+<td>audio&#x2F;mpeg</td>
+</tr>
+<tr>
+<td>.rm</td>
+<td>application&#x2F;vnd.rn-realmedia</td>
+</tr>
+<tr>
+<td>.mid .midi .rmi</td>
+<td>audio&#x2F;mid</td>
+</tr>
+</tbody></table>
+<p>在清单文件中的里，只有<data>没有<type>。但在代码里就可以调用：</p>
+<ul>
+<li>setType(): 调用后设置 mimeType，然后将 data 置为 null；</li>
+<li>setData(): 调用后设置 data，然后将 mimeType 置为 null；</li>
+<li>setDataAndType(): 调用后才会同时设置 data 与 mimeType。</li>
+</ul>
+<p>举个打开百度的例子：</p>
+<pre><code class="java">&lt;intent-filter&gt;
+    &lt;action android:name=&quot;android.intent.action.VIEW&quot;/&gt;
+    &lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;
+    &lt;data android:scheme=&quot;http&quot;  android:host=&quot;www.baidu.com&quot;/&gt;
+&lt;/intent-filter&gt;
+</code></pre>
+<pre><code class="java">    intent = new Intent();
+    intent.setAction(Intent.ACTION_VIEW);
+    Uri data=Uri.parse(&quot;http://www.baidu.com&quot;);
+    intent.setData(data);
+    startActivity(intent);
+</code></pre>
+<h3 id="1-3-6-extras"><a href="#1-3-6-extras" class="headerlink" title="1.3.6 extras"></a>1.3.6 extras</h3><p>extras：拓展信息，通常用于多个Activity之间的数据交换，extras属性是一个Bundle对象，通过键值对，对数据进行存储。extras在日常开发中非常常见：</p>
+<pre><code class="java">Intent intent = new Intent(this, SecondActivity.class);
+intent.putExtra(&quot;name&quot;, &quot;Tony&quot;);
+intent.putExtra(&quot;age&quot;, 28);
+startActivity(intent);
+</code></pre>
+<h3 id="1-3-7-flags"><a href="#1-3-7-flags" class="headerlink" title="1.3.7 flags"></a>1.3.7 flags</h3><p>flags：标志位，指明当前的Intent所期望的运行模式，具体有：</p>
+<ul>
+<li>FLAG_ACTIVITY_CLEAR_TOP：新跳转的Activity如果已经在栈中，则将其上面的所有Activity都清出栈，相当于Activity四大启动模式中的singleTask；</li>
+<li>FLAG_ACTIVITY_SINGLE_TOP：返回栈没有当前需要跳转的Activity，则新建该Activity并放入栈顶。但如果该Activity已经在栈顶了，则不会再重新创建新的Activity。相当于Activity四大启动模式中的singleTop；</li>
+<li>FLAG_ACTIVITY_NEW_TASK：假设当前返回栈有A B C这3个Activity。此时C通过intent跳转到D，并且这个intent添加了FLAG_ACTIVITY_NEW_TASK标记，如果D这个Activity在AndroidManifest.xml中的声明中添加了Task affinity，系统首先会查找有没有和D的Task affinity相同的task栈存在，如果有存在，将D压入那个栈，如果不存在则会新建一个D的affinity的栈将其压入。但如果D的Task affinity默认没有设置，则会把其压入原来的返回栈，变成：A B C D，这样就和不加FLAG_ACTIVITY_NEW_TASK标记效果是一样的了。注意如果试图从非activity的非正常途径启动一个activity，比如从一个service中启动一个activity，则intent比如要添加FLAG_ACTIVITY_NEW_TASK标记。</li>
+</ul>
+<h2 id="1-4-隐式Intent匹配规则总结"><a href="#1-4-隐式Intent匹配规则总结" class="headerlink" title="1.4 隐式Intent匹配规则总结"></a>1.4 隐式Intent匹配规则总结</h2><p>隐式Intent的匹配规则，就是根据当前Intent所设置的action、category、data和清单文件中使用 <intent-filter> 元素为组件声明一个或多个 Intent 过滤器的、、几个属性做匹配，找到最合适的。总结如下：</p>
+<ul>
+<li>清单文件中：category如要使用默认值，则设为android.intent.category.DEFAULT，否者组件不会接收隐式 Intent；</li>
+<li>如果不希望自己的组件，如自定义的XXXActivity被其他应用程序调用，则清单文件中，XXXActivity下面不要声明 <intent-filter> ，并且将该组件的 exported 属性设置为 false；</li>
+<li>代码中：如果没有指定category，系统会默认设置为android.intent.category.DEFAULT；</li>
+<li>一个Intent只有一个action，但可以有多个category，只有当action和所有category和某个<intent-filter>都同时匹配，才算匹配成功。</li>
+<li>一个<intent-filter>可以设置一个或多个<action>，当Intent能和<intent-filter>的任意一个action匹配就算匹配成功；</li>
+<li>一个<intent-filter>可以设置一个或多个<category>，只有当Intent能和<intent-filter>的所有category匹配才算匹配成功；</li>
+<li>如果有多个组件被匹配成功，就会以对话框列表的方式让用户进行选择。</li>
+</ul>
+<h2 id="1-5-显示Intent与隐式Intent的区别"><a href="#1-5-显示Intent与隐式Intent的区别" class="headerlink" title="1.5 显示Intent与隐式Intent的区别"></a>1.5 显示Intent与隐式Intent的区别</h2><p>对明确指出了目标组件名称的Intent，我们称之为“显式Intent”。 对于没有明确指出目标组件名称的Intent，则称之为“隐式 Intent”。</p>
+<h1 id="2、拓展"><a href="#2、拓展" class="headerlink" title="2、拓展"></a>2、拓展</h1><h2 id="2-1-Intent携带数据的大小"><a href="#2-1-Intent携带数据的大小" class="headerlink" title="2.1 Intent携带数据的大小"></a>2.1 Intent携带数据的大小</h2><p>Intent传递数据大小的限制大概在1M左右，超过这个限制就会静默崩溃。所以，如果是同个应用程序之间的数据传输，可以使用文件缓存或者磁盘缓存，如果是应用程序之间，则推荐使用ContentProvider进行数据传输。</p>
+<h2 id="2-2-PendingIntent"><a href="#2-2-PendingIntent" class="headerlink" title="2.2 PendingIntent"></a>2.2 PendingIntent</h2><p>PendingIntent就是延迟或者挂起的Intent，平时也会使用到，在此做个拓展。如接收到消息需要在桌面做通知时，可以这么写：</p>
+<pre><code class="java">pendingIntent = PendingIntent.getActivities(
+            applicationContext, 0, intents,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+ val builder = NotificationCompat.Builder(applicationContext, FORCE_UPDATE_NOTIFY_CHANNEL_ID)
+            builder.setWhen(System.currentTimeMillis())
+            .setContentTitle(showTitle)
+            .setContentText(showContent)
+            .setContentIntent(pendingIntent) //5
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+            .setVisibility(VISIBILITY_PUBLIC)
+            .setAutoCancel(true)
+            .setSmallIcon(R.drawable.ic_launcher)
+</code></pre>
+<p>其中，[注释5]的pendingIntent就是PendingIntent。PendingIntent的具体用法和实现原理，推荐看看这篇文章：<a target="_blank" rel="noopener" href="https://juejin.cn/post/7122767360976486413">Android 面试题：说一下 PendingIntent 和 Intent 的区别</a></p>
+<p>‍</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">itcarrot</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2022/12/04/Android/Intent/">http://example.com/2022/12/04/Android/Intent/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">胡萝卜</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/12/04/Android/HandlerThread/" title="HandlerThread"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">HandlerThread</div></div></a></div><div class="next-post pull-right"><a href="/2022/12/04/Android/IntentService/" title="IntentService"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">IntentService</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">itcarrot</div><div class="author-info__description">再苦再累不掉队，再难再险不放弃</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Intent"><span class="toc-number">1.</span> <span class="toc-text">Intent</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AFIntent"><span class="toc-number">2.</span> <span class="toc-text">1、什么是Intent</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-%E6%98%BE%E7%A4%BAIntent"><span class="toc-number">2.1.</span> <span class="toc-text">1.1 显示Intent</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-%E9%9A%90%E5%BC%8FIntent"><span class="toc-number">2.2.</span> <span class="toc-text">1.2 隐式Intent</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-Intent%E7%9A%84%E7%BB%84%E6%88%90%E9%83%A8%E5%88%86"><span class="toc-number">2.3.</span> <span class="toc-text">1.3 Intent的组成部分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-1-componentName"><span class="toc-number">2.3.1.</span> <span class="toc-text">1.3.1 componentName</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-2-action"><span class="toc-number">2.3.2.</span> <span class="toc-text">1.3.2 action</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-3-category"><span class="toc-number">2.3.3.</span> <span class="toc-text">1.3.3 category</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-4-data"><span class="toc-number">2.3.4.</span> <span class="toc-text">1.3.4 data</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-5-type"><span class="toc-number">2.3.5.</span> <span class="toc-text">1.3.5 type</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-6-extras"><span class="toc-number">2.3.6.</span> <span class="toc-text">1.3.6 extras</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-7-flags"><span class="toc-number">2.3.7.</span> <span class="toc-text">1.3.7 flags</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-4-%E9%9A%90%E5%BC%8FIntent%E5%8C%B9%E9%85%8D%E8%A7%84%E5%88%99%E6%80%BB%E7%BB%93"><span class="toc-number">2.4.</span> <span class="toc-text">1.4 隐式Intent匹配规则总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-5-%E6%98%BE%E7%A4%BAIntent%E4%B8%8E%E9%9A%90%E5%BC%8FIntent%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">2.5.</span> <span class="toc-text">1.5 显示Intent与隐式Intent的区别</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2%E3%80%81%E6%8B%93%E5%B1%95"><span class="toc-number">3.</span> <span class="toc-text">2、拓展</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-Intent%E6%90%BA%E5%B8%A6%E6%95%B0%E6%8D%AE%E7%9A%84%E5%A4%A7%E5%B0%8F"><span class="toc-number">3.1.</span> <span class="toc-text">2.1 Intent携带数据的大小</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-PendingIntent"><span class="toc-number">3.2.</span> <span class="toc-text">2.2 PendingIntent</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/%E6%B6%88%E6%81%AF%E6%9C%BA%E5%88%B6%E5%85%A8%E8%A7%A3%E6%9E%90Handler/" title="消息机制全解析Handler">消息机制全解析Handler</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/Activity/" title="Activity">Activity</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/ContentProvider%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E8%80%85/" title="ContentProvider内容提供者">ContentProvider内容提供者</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/Broadcast%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6/" title="Broadcast广播机制">Broadcast广播机制</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/AsyncTask%E5%85%A8%E8%A7%A3%E6%9E%90/" title="AsyncTask全解析">AsyncTask全解析</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By itcarrot</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

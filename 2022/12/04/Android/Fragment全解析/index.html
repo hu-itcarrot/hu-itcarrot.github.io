@@ -1,0 +1,436 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Fragment全解析 | 胡萝卜</title><meta name="author" content="itcarrot"><meta name="copyright" content="itcarrot"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Fragment全解析‍ 1、什么是Fragment刚开始学习Activity的时候，一个界面就是一个Activity。那么，如果想在一个Activity界面上镶嵌另一个界面如何做呢？Fragment翻译为“片段，破片”，可以理解为“显示在Activity中的Activity”，为解决Android碎片化而生。Fragment可以作为一个Activity界面中独立的子界面，拥有自己的生命周期，也可">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Fragment全解析">
+<meta property="og:url" content="http://example.com/2022/12/04/Android/Fragment%E5%85%A8%E8%A7%A3%E6%9E%90/index.html">
+<meta property="og:site_name" content="胡萝卜">
+<meta property="og:description" content="Fragment全解析‍ 1、什么是Fragment刚开始学习Activity的时候，一个界面就是一个Activity。那么，如果想在一个Activity界面上镶嵌另一个界面如何做呢？Fragment翻译为“片段，破片”，可以理解为“显示在Activity中的Activity”，为解决Android碎片化而生。Fragment可以作为一个Activity界面中独立的子界面，拥有自己的生命周期，也可">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2022-12-04T10:48:34.000Z">
+<meta property="article:modified_time" content="2023-12-07T09:06:43.294Z">
+<meta property="article:author" content="itcarrot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2022/12/04/Android/Fragment%E5%85%A8%E8%A7%A3%E6%9E%90/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Fragment全解析',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-12-07 17:06:43'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="胡萝卜" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="胡萝卜"><span class="site-name">胡萝卜</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Fragment全解析</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-12-07T09:06:43.294Z" title="更新于 2023-12-07 17:06:43">2023-12-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Android/">Android</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Fragment全解析"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Fragment全解析"><a href="#Fragment全解析" class="headerlink" title="Fragment全解析"></a>Fragment全解析</h1><p>‍</p>
+<h1 id="1、什么是Fragment"><a href="#1、什么是Fragment" class="headerlink" title="1、什么是Fragment"></a>1、什么是Fragment</h1><p>刚开始学习Activity的时候，一个界面就是一个Activity。那么，如果想在一个Activity界面上镶嵌另一个界面如何做呢？Fragment翻译为“片段，破片”，可以理解为“显示在Activity中的Activity”，为解决Android碎片化而生。Fragment可以作为一个Activity界面中独立的子界面，拥有自己的生命周期，也可以接受用户的触摸事件。我们可以在一个Activity界面上添加多个Fragment子界面，并且每个Fragment都可以动态的添加、删除、替换，从而使得安卓界面开发具有更强大的灵活性。</p>
+<p>比如微信首页有“微信”、“通讯录”、“发现”、“我”，这4个子界面就是4个Fragment。我们在设计Fragment的时候，需要考虑模块化和可复用化。最后，总结一下使用Fragment的优势：</p>
+<ul>
+<li>可以把一个Activity分为多个可复用的组件，使得UI开发更加有灵活性，之前一个Activity如果需要多个布局的话，就需要设置多个布局文件，又麻烦，性能也不高；</li>
+<li>每个Fragment都是独立的个体，可以动态的添加、删除、替换等，同时也可以同一个Fragment供多个Activity使用；</li>
+<li>与Activity切换相比，Fragment属于轻量切换，Fragment的出现，解决了Activity之间切换不流畅的问题；</li>
+<li>与View相比，View也可以实现在一个Activity上部署几个子界面，但View不能通过startActivityForResult()方法（现在建议使用：registerForActivityResult()方法）接收到返回结果，而且View通常更关注视图的实现；</li>
+</ul>
+<h1 id="2、Fragment的生命周期"><a href="#2、Fragment的生命周期" class="headerlink" title="2、Fragment的生命周期"></a>2、Fragment的生命周期</h1><p>Fragment的生命周期是Fragment面试题里最常问的，就是和Activity生命周期的比较，同时学习Fragment的生命周期最好也是结合Activity的生命周期来学习，因为Fragment是依附于Activity存在的，所以它的生命周期也受到Activity的生命周期影响。下图是网上找到的一张非常全面的图。</p>
+<p>​<img src="https://uploadfiles.nowcoder.com/images/20231120/545613072_1700451268450/D2B5CA33BD970F64A6301FA75AE2EB22" alt="alt">​</p>
+<p>结合我们熟悉的Activity生命周期来学习：</p>
+<ul>
+<li><p>Activity::onCreate()</p>
+<ul>
+<li><strong>Fragment::onAttach()</strong></li>
+<li>*Fragment::onCreate()</li>
+<li>*<strong>Fragment::onCreateView()</strong></li>
+<li>*<strong>Fragment::onActivityCreated()</strong></li>
+</ul>
+</li>
+<li><p>Activity::onStart()</p>
+<ul>
+<li>*Fragment::onStart()</li>
+</ul>
+</li>
+<li><p>Activity::onResume()</p>
+<ul>
+<li>*Fragment::onResume()</li>
+</ul>
+</li>
+<li><p>Activity::onPause()</p>
+<ul>
+<li>*Fragment::onPause()</li>
+</ul>
+</li>
+<li><p>Activity::onStop()</p>
+<ul>
+<li>*Fragment::onStop()</li>
+</ul>
+</li>
+<li><p>Activity::onDestroy()</p>
+<ul>
+<li>*<strong>Fragment::onDestroyView()</strong></li>
+<li>*Fragment::onDestroy()</li>
+<li>*<strong>Fragment::onDetach()</strong></li>
+</ul>
+</li>
+</ul>
+<p>Activity一般有创建-开始-继续-暂停-停止-销毁共六大阶段，Fragment同样也经历了这六大阶段。从上面可以看到最大的差别在于创建-销毁这两个阶段，多出了以下5个方法(上面加粗的5个方法)：</p>
+<ol>
+<li>onAttach(Activity)：当Fragment与Activity发生关联时调用，即将Fragment绑定到Activity时，并且在这个方法可以通过getArguments()方法获取传入该Fragment的参数；</li>
+<li>onCreateView(LayoutInflater, ViewGroup, Bundle)：创建该Fragment的视图时调用；</li>
+<li>onActivityCreated(Bundle)：当Activity的onCreated()方法返回时调用；</li>
+<li>onDestroyView()：对应onCreateView()方法，当该Fragment的视图被移除时调用；</li>
+<li>onDetach()：对应onAttach()方法，当Fragment与Activity取消关联时调用；</li>
+</ol>
+<p><strong>注</strong>：</p>
+<ul>
+<li>除了onCreateView()，如果重写了其他的方法，则必须调用父类对于该方法的实现；</li>
+<li>Activity每一个生命周期都会引发Fragment调用同样的回调，如Activity收到onStop()后，里面的每个Fragment都会收到onStop()，同理，Fragment的onResume()也是在Activity的onResume()之后调用。但是onAttach()-&gt;onCreate()-&gt;onCreateView()-&gt;onActivityCreated()-&gt;onStart()都是在Activity的onStart()中调用的;</li>
+</ul>
+<h1 id="3、Fragment的使用方式"><a href="#3、Fragment的使用方式" class="headerlink" title="3、Fragment的使用方式"></a>3、Fragment的使用方式</h1><p>Fragment的使用方式包括静态使用和动态使用。其中，静态是直接在xml布局文件中声明Fragment，动态则是使用代码来动态实现。</p>
+<h2 id="3-1-静态使用"><a href="#3-1-静态使用" class="headerlink" title="3.1 静态使用"></a>3.1 静态使用</h2><p>步骤：</p>
+<ul>
+<li>创建一个继承Fragment的自定义XrFragment类，重新onCreateView()方法，在该方法中设置对应的xml布局文件；</li>
+</ul>
+<pre><code class="java">public class XrFragment extends Fragment &#123;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) &#123;
+        /*
+        * 参数1：布局xml文件的ID
+        * 参数2：容器，被inflate的布局的父ViewGroup
+        * 参数3：是否将这个生成的View添加到这个容器中去
+        * 作用是将布局文件封装在一个View对象中，并填充到此Fragment中
+        * */
+        View v = inflater.inflate(R.layout.xr_fragment, container, false);
+        return v;
+    &#125;
+&#125;
+</code></pre>
+<ul>
+<li>在Activity的布局文件直接声明该自定义XrFragment类即可。</li>
+</ul>
+<pre><code class="java">&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    android:orientation=&quot;vertical&quot;&gt;
+  
+    &lt;fragment
+        android:id=&quot;@+id/xr_fragment&quot;  // 在这里声明
+        android:name=&quot;com.example.XrFragment&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;match_parent&quot; /&gt;
+&lt;/LinearLayout&gt;
+</code></pre>
+<h2 id="3-2-动态使用"><a href="#3-2-动态使用" class="headerlink" title="3.2 动态使用"></a>3.2 动态使用</h2><p>一个Activity可以有多个Fragment，如果我们需要设置两个按键，按下按键可以打开对应的Fragment可以这么做：</p>
+<pre><code class="java">// 先创建两个自定义Fragment类
+public class XrFragment1 extends Fragment &#123;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) &#123;
+        View v = inflater.inflate(R.layout.xr_fragment_1, container, false);
+        return v;
+    &#125;
+&#125;
+
+public class XrFragment2 extends Fragment &#123;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) &#123;
+        View v = inflater.inflate(R.layout.xr_fragment_2, container, false);
+        return v;
+    &#125;
+&#125;
+</code></pre>
+<p>接着在Activity中将上述两个自定义Fragment绑定两个按键即可：</p>
+<pre><code class="java">public class XuruiActivity extends AppCompatActivity &#123;
+
+    private Button bt_1;
+    private Button bt_2;
+    private FragmentManager manager;
+    private XrFragment1 fragment1;
+    private XrFragment2 fragment2;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) &#123;
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        bt_1 = (Button) findViewById(R.id.bt_1);
+        bt_2 = (Button) findViewById(R.id.bt_2);
+
+        fragment1 = new XrFragment1();
+        fragment2 = new XrFragment2();
+
+        //1：初始化FragmentManager对象
+        manager = getSupportFragmentManager();
+
+        //2：使用FragmentManager对象用来开启一个Fragment事务
+        FragmentTransaction transaction = manager.beginTransaction();
+
+        //3：默认显示fragment1
+        transaction.add(R.id.myframelayout, fragment1).commit();
+
+        //对bt_1设置监听
+        bt_1.setOnClickListener(new View.OnClickListener() &#123;
+            @Override
+            public void onClick(View v) &#123;
+                FragmentTransaction transaction = manager.beginTransaction();
+                transaction.replace(R.id.myframelayout, fragment1).commit(); // 4
+            &#125;
+        &#125;);
+
+        //对bt_2设置监听
+        bt_2.setOnClickListener(new View.OnClickListener() &#123;
+            @Override
+            public void onClick(View v) &#123;
+                FragmentTransaction transaction = manager.beginTransaction();
+                transaction.replace(R.id.myframelayout, fragment2).commit();
+            &#125;
+        &#125;);
+    &#125;
+&#125;
+</code></pre>
+<p>R.id.myframelayout就是一个FrameLayout，作为Fragment的容器，上述自定义的Fragment可通过该myframelayout在Activity中显示。为了更好的管理多个Fragment，可以通过[注释1]获取Fragment管理对象，在[注释2]使用FragmentManager对象用来开启一个FragmentTransaction（事务），FragmentTransaction常用的方法有：</p>
+<ul>
+<li>add()：向Activity中添加一个Fragment</li>
+<li>remove()： 从Activity中移除一个Fragment，如果被移除的Fragment没有添加到回退栈（回退栈见下文），这个Fragment实例将会被销毁</li>
+<li>replace()：使用新的Fragment替换当前的的Fragment，其实就是remove()和add()的结合</li>
+<li>hide()： 隐藏当前的Fragment，但不会销毁</li>
+<li>show()：显示之前隐藏的Fragment</li>
+<li>detach()：会将view从UI中移除,和remove()不同,此时fragment的状态依然由FragmentManager维护</li>
+<li>attach()：重建view视图，附加到UI上并显示</li>
+<li>ransatcion.commit()：提交事务，上述add&#x2F;replace&#x2F;hide&#x2F;show方法都需要执行commit()后才生效</li>
+</ul>
+<blockquote>
+<p>通常情况下，建议使用show()和hide()，避免Fragment重复加载。</p>
+</blockquote>
+<h2 id="3-3-getFragmentManager-getSupportFragmentManager-getChildFragmentManager之间的区别？"><a href="#3-3-getFragmentManager-getSupportFragmentManager-getChildFragmentManager之间的区别？" class="headerlink" title="3.3 getFragmentManager,getSupportFragmentManager,getChildFragmentManager之间的区别？"></a>3.3 getFragmentManager,getSupportFragmentManager,getChildFragmentManager之间的区别？</h2><p>为了管理Fragment，需要获取Fragment管理对象：FragmentManager，其中：</p>
+<ul>
+<li>getFragmentManager()：Activity可以通过该方法获取Activity类里面的Fragment管理器，Fragment里不能用；</li>
+<li>getSupportFragmentManager()：Activity可以通过该方法获取FragmentActivity类里面的Fragment管理器，用于管理这个Activity里面的所有一级Fragment。和getFragmentManager()作用确实是一样的作用，因为，Android3.0版本之前是没有Fragment这个概念，因此3.0版本以前的不可以直接调用 getFragmentManager()，因此3.0版本以前的可以调用getSupportFragmentManager()间接获取FragmentManager。而3.0以后的版本则两个方法任选一个即可，所以建议都调用getSupportFragmentManager()。同时，getSupportFragmentManager()还可以在Fragment中使用，但在Fragment中使用时，是获取的父类Fragment的FragmentManager，如果没有父类，则获取该Fragment所属Activity的FragmentManager；</li>
+<li>getChildFragmentManager()：如果在Fragment里面还需要继续嵌套Fragment，则需要通过该方法在Fragment里面获取FragmentManager</li>
+</ul>
+<pre><code class="java">Fragment1 fragment1 = new Fragment1();
+FragmentManager fragmentManager = fragment1.getChildFragmentManager(); val Fragment2 fragment2 = new Fragment2();
+                        
+fragmentManager.beginTransaction().add(R.id.my_framelayout, fragment2, &quot;newFragment2&quot;).commit()
+</code></pre>
+<h1 id="4、通讯"><a href="#4、通讯" class="headerlink" title="4、通讯"></a>4、通讯</h1><h2 id="4-1-Fragment和Actvity的通讯"><a href="#4-1-Fragment和Actvity的通讯" class="headerlink" title="4.1 Fragment和Actvity的通讯"></a>4.1 Fragment和Actvity的通讯</h2><p>Fragment依附于Activity，两者的通讯可以有以下方式：</p>
+<ul>
+<li>在Activity有对应的Fragment的引用，则直接通过该引用就可以访问Fragment里面的public方法，如果没有Fragment引用，则可以通过getFragmentManager.findFragmentByTag()或者findFragmentById()获得任何Fragment实例对其进行操作，因为每个Fragment都有唯一的ID（比如用android:id属性或者android:tag属性提供唯一标识）；</li>
+<li>在Fragment里可以通过getActivity()来获取当前绑定的Activity的实例，并对其进行操作；</li>
+<li>接口方式：Activity里继承一个接口，并在Fragment里实现；</li>
+<li>广播&#x2F;文件：这是通用的Android跨进程通讯方式，用于Fragment和Activity通讯自然可以；</li>
+<li>Bundle：在Activity中建一个Bundle，将需要传的值存入Bundle，并通过Fragment的setArguments（bundle）传到Fragment，最后在Fragment中，用getArguments()接收。</li>
+<li>registerForActivityResult():可以在Fragment里调用registerForActivityResult()来启动另一个Activity，并返回一些数据回来Fragment。比如在myFragment启动编辑名字的Actvity，编辑完成后把编辑完的名字返回给myFragment：</li>
+</ul>
+<pre><code class="kotlin">//EditNameActivity
+val intent = Intent()
+intent.putExtra(myData.EDIT_NAME, name.text.toString()) //传入修改后的名字
+setResult(Activity.RESULT_OK, intent)
+finish()
+
+//myFragment
+private val startEditNameActivityLauncher: ActivityResultLauncher&lt;Intent&gt; =
+    registerForActivityResult(ActivityResultContracts.StartActivityForResult()) &#123;
+        if (it.resultCode == Activity.RESULT_OK) &#123;
+            val editName = it.data?.getStringExtra(myData.EDIT_NAME) //获取EditNameActivity返回的姓名
+            if (!editName.isNullOrEmpty()) &#123;
+                myViewModel.setUserName(editName)
+            &#125;
+        &#125;
+    
+    &#125;
+  
+startEditNameActivityLauncher.launch(Intent(requireContext(),EditNameActivity::class.java))
+</code></pre>
+<h2 id="4-2-Fragment和Fragment的通讯"><a href="#4-2-Fragment和Fragment的通讯" class="headerlink" title="4.2 Fragment和Fragment的通讯"></a>4.2 Fragment和Fragment的通讯</h2><p>首先，不建议Fragment之间直接通讯，最好是借助Activity为中介。那么，如果一定要在Fragment1打开Fragment2后，从Fragment2返回一些数据回去Fragment1要怎么做呢？ 只要在Fragment1打开Fragment2的时候，多执行一句：</p>
+<blockquote>
+<p>fragment2.setTargetFragment(Fragment1.this, REQUEST_CODE);</p>
+</blockquote>
+<p>然后在Fragment1类里面实现：</p>
+<pre><code class="java">@Override  
+   public void onActivityResult(int requestCode, int resultCode, Intent data) &#123;  
+       super.onActivityResult(requestCode, resultCode, data);  
+       if(resultCode != Activity.RESULT_OK)&#123;  
+           return;  
+       &#125;else&#123;  
+           int rlt = data.getIntExtra(&quot;xr&quot;,0);   //获取数据
+           //处理数据...
+       &#125;  
+   &#125;
+</code></pre>
+<p>接着，进入Fragment2的代码，直接调用以下代码即可：</p>
+<pre><code>Intent intent = new Intent();  
+intent.putExtra(&quot;xr&quot;, 100);  
+getTargetFragment().onActivityResult(Fragment1.REQUEST_CODE,resultOk,intent);  
+   
+</code></pre>
+<h1 id="5、Fragment的回退栈"><a href="#5、Fragment的回退栈" class="headerlink" title="5、Fragment的回退栈"></a>5、Fragment的回退栈</h1><p>Activity有任务栈，Fragment也有回退栈（Back Stack）。比如现在ActivityA先后启动了FragmentA、FragmentB，此时在FragmentB按后退键，会直接退回桌面。如果我们希望能退到FragmentA的话，需要执行</p>
+<blockquote>
+<p>addToBackStack(String tag)：标记本次的回滚操作</p>
+</blockquote>
+<pre><code class="java"> Fragment newFragment = new FragmentA();
+ FragmentTransaction transaction = getFragmentManager().beginTransaction();
+ 
+ transaction.replace(R.id.Fragment_container, newFragment);
+ transaction.addToBackStack(null);
+
+ transaction.commit();
+</code></pre>
+<p>此时，在FragmentB按下后退键，就会跳回FragmentA，再按后退键才最后退回桌面。更进一步，如果回退栈里有4个Fragment：Fragment1到Fragment4，如果想在Fragment4的界面按后退键直接回到Fragment1，可以执行：</p>
+<ul>
+<li>popBackStack(int id, int flags)：其中id表示提交变更时commit()的返回值。</li>
+<li>popBackStack(String name, int flags)：其中name是addToBackStack(String tag)中的tag值</li>
+</ul>
+<p>通过上面两个方法就可以指定回到某个特定的Fragment，并且根据第二个参数flags的不同，有两种情况：</p>
+<ul>
+<li>0：表示除了指定的Fragment所在的这一层之上的所有层都退出栈；</li>
+<li>FragmentManager.POP_BACK_STACK_INCLUSIVE（inclusive）：表示连同指定Fragment所在层以及之上的所有层都一起退出。</li>
+</ul>
+<p>同样的，如果现在ActivityA先后启动了FragmentA、FragmentB，FragmentC，此时在FragmentC需要直接返回到Activity界面可以执行：</p>
+<blockquote>
+<p>getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);</p>
+</blockquote>
+<p>使用POP_BACK_STACK_INCLUSIVE参数是为了确保返回栈中的所有Fragment都被弹出，而不仅仅是单一地把FragmentC弹出。如果不使用该参数，则只会弹出FragmentC，而保留其他Fragment在返回栈中。</p>
+<h1 id="6、Fragment状态保存"><a href="#6、Fragment状态保存" class="headerlink" title="6、Fragment状态保存"></a>6、Fragment状态保存</h1><p>Fragment状态保存入口:</p>
+<p>1、Activity的状态保存, 在Activity的onSaveInstanceState()里, 调用了FragmentManger的saveAllState()方法, 其中会对mActive中各个Fragment的实例状态和View状态分别进行保存.</p>
+<p>2、FragmentManager还提供了public方法: saveFragmentInstanceState(), 可以对单个Fragment进行状态保存, 这是提供给我们用的。</p>
+<p>3、FragmentManager的moveToState()方法中, 当状态回退到ACTIVITY_CREATED, 会调用saveFragmentViewState()方法, 保存View的状态.</p>
+<h1 id="7、你有遇到过哪些关于Fragment的问题，如何处理的？"><a href="#7、你有遇到过哪些关于Fragment的问题，如何处理的？" class="headerlink" title="7、你有遇到过哪些关于Fragment的问题，如何处理的？"></a>7、你有遇到过哪些关于Fragment的问题，如何处理的？</h1><h2 id="7-1-getActivity-空指针："><a href="#7-1-getActivity-空指针：" class="headerlink" title="7.1 getActivity()空指针："></a>7.1 getActivity()空指针：</h2><p>这种情况一般发生在在异步任务里调用getActivity()，此时宿主Activity可能已经销毁了，因此引发空指针问题。最简单的方法就是在引用getActivity()时做个判空判断，同时可以根据情况考虑用获取Context来代替Activity，建议在onAttach()方法中将Context强制转为Activity这种方式来代替直接调用getActivity()。反正不要把Fragment事务放在异步线程的回调中或者AsyncTask的onPostExecute()。</p>
+<h2 id="7-2-Fragment视图重叠"><a href="#7-2-Fragment视图重叠" class="headerlink" title="7.2 Fragment视图重叠"></a>7.2 Fragment视图重叠</h2><p>如果我们在onCreate()方法加载Fragment时，特别是当Activity重建的时候，没有判断saveInstanceState&#x3D;&#x3D;null或if(findFragmentByTag(mFragmentTag) &#x3D;&#x3D; null)，就直接加载布局，可能会导致重复加载了同一个Fragment布局，因此建议加上判断。</p>
+<p>‍</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">itcarrot</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2022/12/04/Android/Fragment%E5%85%A8%E8%A7%A3%E6%9E%90/">http://example.com/2022/12/04/Android/Fragment%E5%85%A8%E8%A7%A3%E6%9E%90/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">胡萝卜</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/12/04/Android/Context/" title="Context"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Context</div></div></a></div><div class="next-post pull-right"><a href="/2022/12/04/Android/HandlerThread/" title="HandlerThread"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">HandlerThread</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">itcarrot</div><div class="author-info__description">再苦再累不掉队，再难再险不放弃</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Fragment%E5%85%A8%E8%A7%A3%E6%9E%90"><span class="toc-number">1.</span> <span class="toc-text">Fragment全解析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AFFragment"><span class="toc-number">2.</span> <span class="toc-text">1、什么是Fragment</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2%E3%80%81Fragment%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="toc-number">3.</span> <span class="toc-text">2、Fragment的生命周期</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3%E3%80%81Fragment%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F"><span class="toc-number">4.</span> <span class="toc-text">3、Fragment的使用方式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-%E9%9D%99%E6%80%81%E4%BD%BF%E7%94%A8"><span class="toc-number">4.1.</span> <span class="toc-text">3.1 静态使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-%E5%8A%A8%E6%80%81%E4%BD%BF%E7%94%A8"><span class="toc-number">4.2.</span> <span class="toc-text">3.2 动态使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-getFragmentManager-getSupportFragmentManager-getChildFragmentManager%E4%B9%8B%E9%97%B4%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-number">4.3.</span> <span class="toc-text">3.3 getFragmentManager,getSupportFragmentManager,getChildFragmentManager之间的区别？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4%E3%80%81%E9%80%9A%E8%AE%AF"><span class="toc-number">5.</span> <span class="toc-text">4、通讯</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-Fragment%E5%92%8CActvity%E7%9A%84%E9%80%9A%E8%AE%AF"><span class="toc-number">5.1.</span> <span class="toc-text">4.1 Fragment和Actvity的通讯</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-Fragment%E5%92%8CFragment%E7%9A%84%E9%80%9A%E8%AE%AF"><span class="toc-number">5.2.</span> <span class="toc-text">4.2 Fragment和Fragment的通讯</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5%E3%80%81Fragment%E7%9A%84%E5%9B%9E%E9%80%80%E6%A0%88"><span class="toc-number">6.</span> <span class="toc-text">5、Fragment的回退栈</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6%E3%80%81Fragment%E7%8A%B6%E6%80%81%E4%BF%9D%E5%AD%98"><span class="toc-number">7.</span> <span class="toc-text">6、Fragment状态保存</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#7%E3%80%81%E4%BD%A0%E6%9C%89%E9%81%87%E5%88%B0%E8%BF%87%E5%93%AA%E4%BA%9B%E5%85%B3%E4%BA%8EFragment%E7%9A%84%E9%97%AE%E9%A2%98%EF%BC%8C%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E7%9A%84%EF%BC%9F"><span class="toc-number">8.</span> <span class="toc-text">7、你有遇到过哪些关于Fragment的问题，如何处理的？</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#7-1-getActivity-%E7%A9%BA%E6%8C%87%E9%92%88%EF%BC%9A"><span class="toc-number">8.1.</span> <span class="toc-text">7.1 getActivity()空指针：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-2-Fragment%E8%A7%86%E5%9B%BE%E9%87%8D%E5%8F%A0"><span class="toc-number">8.2.</span> <span class="toc-text">7.2 Fragment视图重叠</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/%E6%B6%88%E6%81%AF%E6%9C%BA%E5%88%B6%E5%85%A8%E8%A7%A3%E6%9E%90Handler/" title="消息机制全解析Handler">消息机制全解析Handler</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/Activity/" title="Activity">Activity</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/ContentProvider%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E8%80%85/" title="ContentProvider内容提供者">ContentProvider内容提供者</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/Broadcast%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6/" title="Broadcast广播机制">Broadcast广播机制</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/AsyncTask%E5%85%A8%E8%A7%A3%E6%9E%90/" title="AsyncTask全解析">AsyncTask全解析</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By itcarrot</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

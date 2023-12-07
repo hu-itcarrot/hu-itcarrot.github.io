@@ -1,0 +1,479 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>HandlerThread | 胡萝卜</title><meta name="author" content="itcarrot"><meta name="copyright" content="itcarrot"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="HandlerThread1、HandlerThread是什么？在安卓开发中，如果需要执行耗时操作，则可以开启子线程来完成，然而手动创建销毁线程又麻烦又消耗系统性能，因此可以使用线程池来完成。如果还需要在线程中使用Handler异步消息机制，或者需要实现子线程和子线程之间的通讯（Handler是主线程和子线程之间的通讯），那么就可以用HandlerThreaad。 HandlerThread是Go">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HandlerThread">
+<meta property="og:url" content="http://example.com/2022/12/04/Android/HandlerThread/index.html">
+<meta property="og:site_name" content="胡萝卜">
+<meta property="og:description" content="HandlerThread1、HandlerThread是什么？在安卓开发中，如果需要执行耗时操作，则可以开启子线程来完成，然而手动创建销毁线程又麻烦又消耗系统性能，因此可以使用线程池来完成。如果还需要在线程中使用Handler异步消息机制，或者需要实现子线程和子线程之间的通讯（Handler是主线程和子线程之间的通讯），那么就可以用HandlerThreaad。 HandlerThread是Go">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2022-12-04T10:48:34.000Z">
+<meta property="article:modified_time" content="2023-12-07T09:06:59.150Z">
+<meta property="article:author" content="itcarrot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2022/12/04/Android/HandlerThread/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'HandlerThread',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-12-07 17:06:59'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="胡萝卜" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="胡萝卜"><span class="site-name">胡萝卜</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">HandlerThread</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-12-07T09:06:59.150Z" title="更新于 2023-12-07 17:06:59">2023-12-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Android/">Android</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="HandlerThread"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="HandlerThread"><a href="#HandlerThread" class="headerlink" title="HandlerThread"></a>HandlerThread</h1><h1 id="1、HandlerThread是什么？"><a href="#1、HandlerThread是什么？" class="headerlink" title="1、HandlerThread是什么？"></a>1、HandlerThread是什么？</h1><p>在安卓开发中，如果需要执行耗时操作，则可以开启子线程来完成，然而手动创建销毁线程又麻烦又消耗系统性能，因此可以使用<strong>线程池</strong>来完成。如果还需要在线程中使用Handler异步消息机制，或者需要实现子线程和子线程之间的通讯（Handler是主线程和子线程之间的通讯），那么就可以用<strong>HandlerThreaad</strong>。</p>
+<p>HandlerThread是Google封装好的一个类，它的内部有自己的Looper对象，可以进行Loop轮询，用于执行多个耗时操作，而不需要多次开启线程，本质是使用Handler和Looper实现的。</p>
+<h1 id="2、HandlerThread怎么使用"><a href="#2、HandlerThread怎么使用" class="headerlink" title="2、HandlerThread怎么使用"></a>2、HandlerThread怎么使用</h1><p>如果我们需要使用HandlerThread来读取一个大文件的内容，可以这么写：</p>
+<pre><code class="java">public class Xuruictivity extends AppCompatActivity &#123;
+    private static final int MSG_READ_INFO = 100;
+    Handler mMainHandler = new Handler();
+    private Handler mThreadHandler;
+    private HandlerThread mHandlerThread;
+    private boolean isFinish = false; 
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) &#123;
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_xurui);
+        initHandlerThread(); //1
+        startHandlerThread(); 
+    &#125;
+
+    private void initHandlerThread() &#123;
+        mHandlerThread = new HandlerThread(&quot;Xurui&quot;); //2
+        mHandlerThread.start(); //3 
+        mThreadHandler = new Handler(mHandlerThread.getLooper()) &#123; //4
+            @Override
+            public void handleMessage(Message msg) &#123;
+                switch (msg.what) &#123;
+                    case MSG_READ_INFO: &#123;
+                        readFileInfo();
+                        // 如果没有读完，则继续
+                        if (!isFinish) &#123;
+                            mThreadHandler.sendEmptyMessage(MSG_READ_INFO);
+                        &#125;
+                    &#125;
+                    break;
+                    default:
+                        break;
+                &#125;
+            
+            &#125;
+        &#125;;
+    &#125;
+
+    /**
+     * 模拟读取文件
+     */
+    private void readFileInfo() &#123;
+        try &#123;
+            //模拟耗时
+            Thread.sleep(1200);
+            mMainHandler.post(new Runnable() &#123;
+                @Override
+                public void run() &#123;
+                    // 读取大文件内容
+                &#125;
+            &#125;);
+        &#125; catch (InterruptedException e) &#123;
+            e.printStackTrace();
+        &#125;
+    &#125;
+  
+    private void startHandlerThread() &#123;
+       mThreadHandler.sendEmptyMessage(MSG_READ_INFO);
+    &#125;
+
+    @Override
+    protected void onPause() &#123;
+        super.onPause();
+        mThreadHandler.removeMessages(MSG_READ_INFO); //5
+    &#125;
+
+    @Override
+    protected void onDestroy() &#123;
+        super.onDestroy();
+        mHandlerThread.quit();//6
+        mMainHandler.removeCallbacksAndMessages(null); //7
+    &#125;
+&#125;
+</code></pre>
+<p>使用mHandlerThread的looper创建的mThreadHandler，对应注释4，里面的handleMessage是可以进行耗时操作的，因为它是执行在mHandlerThread所在的子线程。因此其优点是不会阻塞主线程，但是多任务时也需要有序执行，导致执行效率低。因此HandlerThread比较适合耗时不且不会产生较大的阻塞，比如读取文件，操作数据库等，至于网络IO操作这种可能有较大阻塞等，HandlerThread并不适合。</p>
+<p>上面代码最关键的步骤都在注释1的函数里。我们来看看HandlerThread的使用方法：</p>
+<ol>
+<li>创建HandlerThread实例：对应注释2，其中“xurui”是子线程的名字，可以随意取；</li>
+<li>执行start函数来启动HandlerThread线程：对应注释3；</li>
+<li>将HandlerThread和Handler绑定：对应注释4；</li>
+<li>然后执行startHandlerThread()就行了，最后记得退出HandlerThread，对应注释6。</li>
+</ol>
+<p>为何是这样的步骤，那就进入激动人心的源码分析吧！</p>
+<h1 id="3、源码分析"><a href="#3、源码分析" class="headerlink" title="3、源码分析"></a>3、源码分析</h1><p>HandlerThread的源码仅仅100+行，因此直接copy完整的源码，不做任何删减（下面源码是android9.0.0的源码）。</p>
+<pre><code class="java">public class HandlerThread extends Thread &#123;
+     int mPriority;
+     int mTid = -1;
+     Looper mLooper;
+     private @Nullable Handler mHandler;
+
+       public HandlerThread(String name) &#123; //1
+         super(name);
+         mPriority = Process.THREAD_PRIORITY_DEFAULT;
+     &#125;
+
+       /**
+      * Constructs a HandlerThread.
+      * @param name
+      * @param priority The priority to run the thread at. The value supplied must be from
+      * &#123;@link android.os.Process&#125; and not from java.lang.Thread.
+      */
+     public HandlerThread(String name, int priority) &#123; //2
+         super(name);
+         mPriority = priority;
+     &#125;
+
+       /**
+      * Call back method that can be explicitly overridden if needed to execute some
+      * setup before Looper loops.
+      */
+     protected void onLooperPrepared() &#123;
+     &#125;
+
+       @Override
+     public void run() &#123;
+         mTid = Process.myTid();
+         Looper.prepare(); //3
+         synchronized (this) &#123;
+             mLooper = Looper.myLooper();
+             notifyAll(); //4 
+         &#125;
+         Process.setThreadPriority(mPriority);
+         onLooperPrepared();
+         Looper.loop(); //5
+         mTid = -1;
+     &#125;
+
+       /**
+      * This method returns the Looper associated with this thread. If this thread not been started
+      * or for any reason isAlive() returns false, this method will return null. If this thread
+      * has been started, this method will block until the looper has been initialized.
+      * @return The looper.
+      */
+     public Looper getLooper() &#123; //6
+         if (!isAlive()) &#123;
+             return null;
+         &#125;
+
+           // If the thread has been started, wait until the looper has been created.
+         synchronized (this) &#123;
+             while (isAlive() &amp;&amp; mLooper == null) &#123;
+                 try &#123;
+                     wait(); //7
+                 &#125; catch (InterruptedException e) &#123;
+                 &#125;
+             &#125;
+         &#125;
+         return mLooper;
+     &#125;
+
+       /**
+      * @return a shared &#123;@link Handler&#125; associated with this thread
+      * @hide
+      */
+     @NonNull
+     public Handler getThreadHandler() &#123;
+         if (mHandler == null) &#123;
+             mHandler = new Handler(getLooper());
+          &#125;
+          return mHandler;
+      &#125;
+
+        /**
+       * Quits the handler thread&#39;s looper.
+       * &lt;p&gt;
+       * Causes the handler thread&#39;s looper to terminate without processing any
+       * more messages in the message queue.
+       * &lt;/p&gt;&lt;p&gt;
+       * Any attempt to post messages to the queue after the looper is asked to quit will fail.
+       * For example, the &#123;@link Handler#sendMessage(Message)&#125; method will return false.
+       * &lt;/p&gt;&lt;p class=&quot;note&quot;&gt;
+       * Using this method may be unsafe because some messages may not be delivered
+       * before the looper terminates.  Consider using &#123;@link #quitSafely&#125; instead to ensure
+       * that all pending work is completed in an orderly manner.
+       * &lt;/p&gt;
+       *
+       * @return True if the looper looper has been asked to quit or false if the
+       * thread had not yet started running.
+       *
+       * @see #quitSafely
+       */
+      public boolean quit() &#123;
+          Looper looper = getLooper();
+          if (looper != null) &#123;
+              looper.quit();
+              return true;
+          &#125;
+          return false;
+      &#125;
+
+        /**
+       * Quits the handler thread&#39;s looper safely.
+       * &lt;p&gt;
+       * Causes the handler thread&#39;s looper to terminate as soon as all remaining messages
+       * in the message queue that are already due to be delivered have been handled.
+       * Pending delayed messages with due times in the future will not be delivered.
+       * &lt;/p&gt;&lt;p&gt;
+       * Any attempt to post messages to the queue after the looper is asked to quit will fail.
+       * For example, the &#123;@link Handler#sendMessage(Message)&#125; method will return false.
+       * &lt;/p&gt;&lt;p&gt;
+       * If the thread has not been started or has finished (that is if
+       * &#123;@link #getLooper&#125; returns null), then false is returned.
+       * Otherwise the looper is asked to quit and true is returned.
+       * &lt;/p&gt;
+       *
+       * @return True if the looper looper has been asked to quit or false if the
+       * thread had not yet started running.
+       */
+      public boolean quitSafely() &#123;
+          Looper looper = getLooper();
+          if (looper != null) &#123;
+              looper.quitSafely();
+              return true;
+          &#125;
+          return false;
+      &#125;
+
+        /**
+       * Returns the identifier of this thread. See Process.myTid().
+       */
+      public int getThreadId() &#123;
+          return mTid;
+      &#125;
+&#125;  
+</code></pre>
+<ol>
+<li>构造方法</li>
+</ol>
+<p>关键看看注释2的构造函数，其中name是该线程的名字，priority是线程的优先级，在此默认是THREAD_PRIORITY_DEFAULT，这些宏是在 Process 中定义的，值越小，进程优先级越高，主线程的优先级也是THREAD_PRIORITY_DEFAULT。</p>
+<ol start="2">
+<li>run方法</li>
+</ol>
+<p>在该方法里，执行了很经典的函数，也就是注释3的 Looper.prepare()，详情见本系列Handler小节，该方法主要是创建Looper实例，只有创建了Looper实例，才能将HandlerThread和handler绑定在一起。因此需要先执行start（）函数，执行后，线程会交给虚拟机进行调度并自动调用run（）方法。</p>
+<p>注释5相信看过Handler小节的同学也很清楚了，看看注释4，为何这里会有notifyAll()方法呢？而且还使用了synchronized。</p>
+<ol start="3">
+<li>HandlerThread和handler绑定</li>
+</ol>
+<p>这里关键是看看getLooper()函数，对应注释6，这里也有synchronized，同时还有wait()方法，众所周知，wait()和notifyAll()是搭配使用来实现线程同步的。这里为了获取到mLooper对象，需要进行线程同步。因为我们希望getLooper()函数只有在线程创建成功且Looper实例也创建成功时才返回，因此在注释7开始阻塞，直到注释4已经创建完Looper实例时才唤醒。</p>
+<ol start="4">
+<li>quit和quitSafe方法</li>
+</ol>
+<p>最后看看如何退出线程。当调用quit和quitSafe方法就可以退出Looper消息循环并退出线程，从名字上就可以知道后者是“安全退出“。</p>
+<p>跟踪这两个方法，会跑到MessageQueue.java里的：</p>
+<pre><code class="java">void quit(boolean safe) &#123;
+     if (!mQuitAllowed) &#123;
+         throw new IllegalStateException(&quot;Main thread not allowed to quit.&quot;);
+     &#125;
+
+     synchronized (this) &#123;
+         if (mQuitting) &#123;
+             return;
+         &#125;
+         mQuitting = true;
+
+         if (safe) &#123;
+             removeAllFutureMessagesLocked(); //8
+         &#125; else &#123;
+             removeAllMessagesLocked(); //9
+         &#125;
+
+         // We can assume mPtr != 0 because mQuitting was previously false.
+         nativeWake(mPtr);
+     &#125;
+ &#125;
+</code></pre>
+<p>如果安全则调用注释8，不安全调用注释9.继续看源码。removeAllMessagesLocked()只是遍历链表并把所有消息移除掉，最后将mMessages设置为null。而removeAllFutureMessagesLocked()会根据when变量，对应下面注释10，如果当前没有处理消息则同样移除所有消息，否则等待消息处理完毕后再退出循环。</p>
+<p>因此这里所谓的安全或者不安全是因为quit()方法无论当前是否有处理消息，都强制移除所有回调，所以不安全。</p>
+<pre><code class="java">private void removeAllMessagesLocked() &#123;
+    Message p = mMessages;
+    while (p != null) &#123;
+        Message n = p.next;
+        p.recycleUnchecked();
+        p = n;
+    &#125;
+    mMessages = null;
+&#125;
+
+private void removeAllFutureMessagesLocked() &#123;
+    final long now = SystemClock.uptimeMillis();
+    Message p = mMessages;
+    if (p != null) &#123;
+        if (p.when &gt; now) &#123; //10
+            removeAllMessagesLocked();
+        &#125; else &#123;
+            Message n;
+            for (;;) &#123;
+                n = p.next;
+                if (n == null) &#123;
+                    return;
+                &#125;
+                if (n.when &gt; now) &#123;
+                    break;
+                &#125;
+                p = n;
+            &#125;
+            p.next = null;
+            do &#123;
+                p = n;
+                n = p.next;
+                p.recycleUnchecked();
+            &#125; while (n != null);
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<h1 id="4、-总结"><a href="#4、-总结" class="headerlink" title="4、 总结"></a>4、 总结</h1><p>最后做个总结：</p>
+<ol>
+<li>HandlerThread 是内部会创建Looper的线程，因此只能作为子线程使用；</li>
+<li>HandlerThread 需要配合 Handler 使用，HandlerThread 的耗时操作在handleMessage()中执行，因为此时执行的是在HandlerThread所在的子线程执行的，但不能像普通线程一样在run()方法中进行，因为HanderThread的run()方法已经被写死。</li>
+<li>HandlerThread和Handler绑定之前，必须先调用 mHandlerThread.start() 让 run() 方法跑起来.</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">itcarrot</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2022/12/04/Android/HandlerThread/">http://example.com/2022/12/04/Android/HandlerThread/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">胡萝卜</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/12/04/Android/Fragment%E5%85%A8%E8%A7%A3%E6%9E%90/" title="Fragment全解析"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Fragment全解析</div></div></a></div><div class="next-post pull-right"><a href="/2022/12/04/Android/Intent/" title="Intent"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Intent</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">itcarrot</div><div class="author-info__description">再苦再累不掉队，再难再险不放弃</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#HandlerThread"><span class="toc-number">1.</span> <span class="toc-text">HandlerThread</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1%E3%80%81HandlerThread%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">1、HandlerThread是什么？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2%E3%80%81HandlerThread%E6%80%8E%E4%B9%88%E4%BD%BF%E7%94%A8"><span class="toc-number">3.</span> <span class="toc-text">2、HandlerThread怎么使用</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3%E3%80%81%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="toc-number">4.</span> <span class="toc-text">3、源码分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4%E3%80%81-%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">4、 总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/%E6%B6%88%E6%81%AF%E6%9C%BA%E5%88%B6%E5%85%A8%E8%A7%A3%E6%9E%90Handler/" title="消息机制全解析Handler">消息机制全解析Handler</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/Activity/" title="Activity">Activity</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/ContentProvider%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E8%80%85/" title="ContentProvider内容提供者">ContentProvider内容提供者</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/Broadcast%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6/" title="Broadcast广播机制">Broadcast广播机制</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/AsyncTask%E5%85%A8%E8%A7%A3%E6%9E%90/" title="AsyncTask全解析">AsyncTask全解析</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By itcarrot</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

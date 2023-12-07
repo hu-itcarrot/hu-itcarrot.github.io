@@ -1,0 +1,291 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Service | 胡萝卜</title><meta name="author" content="itcarrot"><meta name="copyright" content="itcarrot"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Service1、启动模式​​ 1.1 StartService() 模式生命周期：onCreate()-&gt;onStartComment()-&gt;onDestroy() 生命周期见上图左时序图。当另一个组件可以通过调用 startService()方法来启动特定的服务，此时Service生命周期中的onStartCommand()方法被调用。当调用startService()方法时，其他">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Service">
+<meta property="og:url" content="http://example.com/2022/12/04/Android/Service/index.html">
+<meta property="og:site_name" content="胡萝卜">
+<meta property="og:description" content="Service1、启动模式​​ 1.1 StartService() 模式生命周期：onCreate()-&gt;onStartComment()-&gt;onDestroy() 生命周期见上图左时序图。当另一个组件可以通过调用 startService()方法来启动特定的服务，此时Service生命周期中的onStartCommand()方法被调用。当调用startService()方法时，其他">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2022-12-04T10:48:34.000Z">
+<meta property="article:modified_time" content="2023-12-07T09:07:35.847Z">
+<meta property="article:author" content="itcarrot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2022/12/04/Android/Service/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Service',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-12-07 17:07:35'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="胡萝卜" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="胡萝卜"><span class="site-name">胡萝卜</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Service</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-12-07T09:07:35.847Z" title="更新于 2023-12-07 17:07:35">2023-12-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Android/">Android</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Service"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h1><h3 id="1、启动模式"><a href="#1、启动模式" class="headerlink" title="1、启动模式"></a>1、启动模式</h3><p>​<img src="/images/Android/image-20231128154733-w4l8pu9.png" alt="image">​</p>
+<h4 id="1-1-StartService-模式"><a href="#1-1-StartService-模式" class="headerlink" title="1.1 StartService() 模式"></a>1.1 StartService() 模式</h4><p>生命周期：onCreate()-&gt;onStartComment()-&gt;onDestroy()</p>
+<p>生命周期见上图左时序图。当另一个组件可以通过调用 startService()方法来启动特定的服务，此时Service生命周期中的onStartCommand()方法被调用。当调用startService()方法时，其他组件需要在方法中传递一个intent参数，服务会在onStartCommand()中接收到intent并获取一些数据。比如ActivityA需要上报一些用户数据到服务器上面，就可以通过startService()来启动ServiceA，并将需要上报的数据传递给ServiceA，在ServiceA里面调用一些网络接口，把数据直接上报到服务器上面。</p>
+<p>当一个服务以这种方式启动时，它的生命周期不再受启动它的组件的影响，它可以在后台无限期地运行，如上一段的例子里，就算ActvityA挂了，ServiceA仍在后台运行，直到ServiceA自己调用stopSelf()或者其他的组件手动调用stopService(ServiceA)时ServiceA才会停止。</p>
+<p>‍</p>
+<h4 id="1-2-BindService-模式"><a href="#1-2-BindService-模式" class="headerlink" title="1.2 BindService()模式"></a>1.2 BindService()模式</h4><p>生命周期：onCreate()-&gt;onBind()-&gt;onUnBind()-&gt;onDestroy()</p>
+<p>生命周期见上图右侧时序图。从名字上可以看出这个“绑定”一个服务，要创建一个支持绑定的Service，我们必须要重写它的onBind()方法，这个方***返回一个IBinder对象，它是客户端用来和服务器进行交互的接口。如ActivityA绑定ServiceA，此时ActivityA称为客户端，ServiceA称为服务端，ActivityA有从ServiceA返回的一个IBinder对象，通过该对象，ActivityA就可以调用ServiceA里面的方法。</p>
+<p>生命周期受Activity影响，Activity结束，Service也就结束了</p>
+<p>‍</p>
+<h4 id="1-3-startService-x2F-bindService同时使用"><a href="#1-3-startService-x2F-bindService同时使用" class="headerlink" title="1.3 startService&#x2F;bindService同时使用"></a>1.3 startService&#x2F;bindService同时使用</h4><p>我们完成可能startService启动一个服务的的同时又bindService绑定一个服务：</p>
+<ul>
+<li>因为通过startService启动，所以该Service将会一直再后台运行，onCreate方法只有在第一次startService时调用，onStartCommond的调用次数和startService调用次数一致</li>
+<li>这种情况需要同时stopService和unbindService方法， onDestroy方法才会被执行，缺一不可。</li>
+</ul>
+<p>‍</p>
+<h4 id="1-4-为什么bindService可以跟Activity生命周期联动？（附加题）"><a href="#1-4-为什么bindService可以跟Activity生命周期联动？（附加题）" class="headerlink" title="1.4 为什么bindService可以跟Activity生命周期联动？（附加题）"></a>1.4 为什么bindService可以跟Activity生命周期联动？（附加题）</h4><ol>
+<li>bindService方法执行时，LoadedApk会记录ServiceConnection信息；</li>
+<li>Activity执行finish方法时，会通过LoadedApk检查Activity是否存在未注销&#x2F;解绑的 ServiceConnection，如果有，那么会通知AMS注销&#x2F;解绑对应的Service，并打印异常信息，告诉用户应该主动执行注销&#x2F;解绑的操作。</li>
+</ol>
+<p>‍</p>
+<h4 id="1-5-在什么情况下使用-startService-或-bindService-或-同时使用startService-和-bindService？"><a href="#1-5-在什么情况下使用-startService-或-bindService-或-同时使用startService-和-bindService？" class="headerlink" title="1.5 在什么情况下使用 startService 或 bindService 或 同时使用startService 和 bindService？"></a>1.5 在什么情况下使用 startService 或 bindService 或 同时使用startService 和 bindService？</h4><ol>
+<li>如果你要启动的服务是需要后台长期运行，并且你经常需要使用到这个服务的，那么使用 startService 便可以了，比如我要经常上报数据到远程服务器，那么就用startService来启动负责数据上报的服务；</li>
+<li>如果你只是要用到服务里的某个接口，使用频率也不高，因此不需要服务一直运行，而是等到需要使用接口的时候，通过bindService去绑定服务，创建该服务实例，调用完就解绑服务。这种方式可以节省很多系统资源，当然也要注意每次都要创建服务是需要花费一定时间的，只是相对于让服务一直运行后台，我们更愿意每次重新创建；</li>
+<li>如果你想要与正在运行的 Service 取得联系，那么就可以通过 bindService来绑定服务，获取服务在本地的代理，也就是上面说的IBinder，通过IBinder来和Service取得联系。此时就同时使用 startService 和 bindService 了。</li>
+</ol>
+<p>‍</p>
+<h3 id="2-Service的种类和优先级"><a href="#2-Service的种类和优先级" class="headerlink" title="2 Service的种类和优先级"></a>2 Service的种类和优先级</h3><h4 id="2-1-Service的种类"><a href="#2-1-Service的种类" class="headerlink" title="2.1 Service的种类"></a>2.1 Service的种类</h4><ol>
+<li>后台service</li>
+<li>前台service</li>
+<li>本地service</li>
+<li>远程service</li>
+</ol>
+<ul>
+<li><p>按地点分：</p>
+<ul>
+<li>本地服务：该服务依赖于主进程，而非独立的进程，因此在一定程度节约了资源，且和主进程的通讯更简单，不过如果主进程挂了，该服务就终止。如一个主进程启动一个本地网络服务，将一些数据上报到远程服务器后，就可以停止该本地网络服务。</li>
+<li>远程服务：该服务独立于主进程，是一个独立的进程。不受其他进程的影响，多个进程都可以通过AIDL（这个后续会讲到，TODO）单独与该服务进行IPC通讯，因此较为复杂，且这种服务一般长期运行在后台。典型的例子就是系统服务。</li>
+</ul>
+</li>
+<li><p>按运行类型分：</p>
+<ul>
+<li>后台服务：默认的服务都是后台服务，也就是startService()启动的服务，服务终止时用户是无法感知的，如天气更新等服务；</li>
+<li>前台服务：后台服务优先级较低，可能会被系统杀死，可以将后台服务提高为前台服务，是会在状态栏显示图标的服务，如常见的音乐播放服务，服务终止，状态栏的图标也消失；</li>
+<li>可交互的后台服务：服务本来是无法和用户交互的，但可以先用Activity和用户交互，同时Activity通过bindSerive()绑定服务，进而实现“可交互的后台服务”。</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-2-service的优先级"><a href="#2-2-service的优先级" class="headerlink" title="2.2 service的优先级"></a>2.2 service的优先级</h4><p>前台进程</p>
+<p>可见进程</p>
+<p>服务进程</p>
+<p>后台进程</p>
+<p>空进程</p>
+<p>Service和Activity，一起看下Android中进程的优先级。以下优先级由高到低。</p>
+<ol>
+<li>前台进程：</li>
+</ol>
+<p>即与用户交互的Activity，以及Activity所使用的Service等，如果系统不足，最晚会杀死前台进程；</p>
+<ol start="2">
+<li>可见进程：</li>
+</ol>
+<p>对用户可见，但不能与用户交互的Activity或者绑定在其上面的Service。</p>
+<ol start="3">
+<li>服务进程：</li>
+</ol>
+<p>正使用StartService方法运行的服务，对用户是不可见的，但却是用户关心。例如正在看小说时，后台播放音乐的服务进程，如果此时系统需要空间运行，会先停止音乐服务，再停止看小说的进程。</p>
+<ol start="4">
+<li>后台进程：</li>
+</ol>
+<p>运行着执行onStop方法而停止的程序，但是却不是用户当前关心的，例如后台挂着的QQ，这时的进程系统一旦没了有内存就首先被杀死</p>
+<ol start="5">
+<li>空进程：</li>
+</ol>
+<p>不包含任何应用程序的进程，这样的进程系统是一般不会让他存在的。</p>
+<p>‍</p>
+<h4 id="3-3-如何保证service不被杀死"><a href="#3-3-如何保证service不被杀死" class="headerlink" title="3.3 如何保证service不被杀死"></a>3.3 如何保证service不被杀死</h4><p>1、使用自定义的服务</p>
+<p>2、使用两个service，当其中的一个service挂了，用另一个service启动</p>
+<p><strong>答案：</strong></p>
+<ol>
+<li>使用自定义系统服务：自定义系统服务原则上是不会被系统杀死的，因此，一些重要的服务可以考虑用自定义系统服务来实现；</li>
+<li>使用系统服务来监控：先弄一个白名单，记录需要监控的应用的包名，再自定义一个系统服务，监控系统里某个应用被杀死，如果该应用在白名单上，则重新拉起应用；</li>
+<li>设置为前台服务，前台服务的优先级更高，不会轻易被杀死；</li>
+<li>使用第三方库来保活，如HelloDaemon；</li>
+<li>使用双进程Service，在ServiceA和ServiceB相互保护，检测到有一个Service被杀死则重新拉起；</li>
+<li>特殊操作拉起服务：在亮屏、开机等特殊操作手动的拉起服务；</li>
+<li>使用闹钟循环拉起服务;</li>
+<li>应用程序添加SystemUID，使应用程序成为系统应用，比如手机桌面的下拉框就是一个系统应用，叫做SystemUI；</li>
+<li>Service设置成START_STICKY（onStartCommand方法中），kill 后会被重启（等待5秒左右），重传Intent，保持与重启前一样；</li>
+</ol>
+<h3 id="3、说说Activity、Intent、Service-是什么关系？"><a href="#3、说说Activity、Intent、Service-是什么关系？" class="headerlink" title="3、说说Activity、Intent、Service 是什么关系？"></a>3、说说Activity、Intent、Service 是什么关系？</h3><p>Activity是属于页面的交互和展示，Intent可以在Activity中进行数据的传输，Service属于一种后台进程</p>
+<h3 id="4、直接在Activity中创建一个thread跟在service中创建一个thread之间的区别？"><a href="#4、直接在Activity中创建一个thread跟在service中创建一个thread之间的区别？" class="headerlink" title="4、直接在Activity中创建一个thread跟在service中创建一个thread之间的区别？"></a>4、直接在Activity中创建一个thread跟在service中创建一个thread之间的区别？</h3><ol>
+<li>Activity中创建：该线程负责完成该Activity的某个特殊的任务，特别是耗时的任务，等Activity销毁后，线程就没有意义了，也就销毁了</li>
+<li>Service中创建：因为Service是后台线程，只要服务没有挂掉，线程就可以一直运行</li>
+</ol>
+<p>‍</p>
+<h3 id="5-Service和Activity如何进行通信"><a href="#5-Service和Activity如何进行通信" class="headerlink" title="5 Service和Activity如何进行通信"></a>5 Service和Activity如何进行通信</h3><ol>
+<li>在service中添加一个继承Binder的内部类，并添加相应的方法</li>
+<li>service中重写service的onbind方法，返回我们刚刚定义的那个内部类的实例</li>
+<li>Activity中绑定服务，重写serviceConnection，onserviceConnection时返回的IBinder调用逻辑方法</li>
+</ol>
+<h3 id="6-IntentService是什么-IntentService原理，应用场景及其与Service的区-别"><a href="#6-IntentService是什么-IntentService原理，应用场景及其与Service的区-别" class="headerlink" title="6 .IntentService是什么,IntentService原理，应用场景及其与Service的区 别"></a>6 .IntentService是什么,IntentService原理，应用场景及其与Service的区 别</h3><p>IntentService 是 Service 的子类，默认开启了一个工作线程HandlerThread，使用这个工作线程逐一处理所有启动 请求，在任务执行完毕后会自动停止服务。只要实现一个方法 onHandleIntent，该方法会接收每个启动请求的 Intent，能够执行后台工作和耗时操作。</p>
+<p>可以启动 IntentService 多次，而每一个耗时操作会以队列的方式在 IntentService 的 onHandlerIntent 回调方法中 执行，并且，每一次只会执行一个工作线程，执行完第一个再执行第二个。并且等待所有消息都执行完后才终止服 务。</p>
+<p>如何使用：</p>
+<ol>
+<li>创建一个名叫 ServiceHandler 的内部 Handler</li>
+<li>把内部Handler与HandlerThread所对应的子线程进行绑定</li>
+<li>HandlerThread开启线程 创建自己的looper</li>
+<li>通过 onStartCommand() intent，依次插入到工作队列中，并发送给 onHandleIntent()逐个处理</li>
+</ol>
+<p>应用场景：</p>
+<p>后台下载任务，静默上传</p>
+<p>‍</p>
+<h3 id="7-bindService和startService混合使用的生命周期以及怎么关闭"><a href="#7-bindService和startService混合使用的生命周期以及怎么关闭" class="headerlink" title="7 bindService和startService混合使用的生命周期以及怎么关闭"></a>7 bindService和startService混合使用的生命周期以及怎么关闭</h3><ol>
+<li><p>如果先启动Bind service 后启动start Service</p>
+<p> 生命周期：onCreate()-&gt;onStartCommand()-&gt;onBind()</p>
+</li>
+<li><p>如果先启动start Service后启动BindService</p>
+<p> 生命周期：onCreate()-&gt;onBind()-&gt;onStartCommand()</p>
+</li>
+<li><p>如果只是stop Service</p>
+<p> service的onDestroy方法不会立即执行，在Activity退出的时候才会执行onDestroy()</p>
+</li>
+<li><p>如果只是unbindService </p>
+<p> 只有onUnbind()方法会执行，ondestroy()不会执行</p>
+</li>
+</ol>
+<p>如果要完全退出Service，那么就得执行unbindService()以及stopService。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">itcarrot</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2022/12/04/Android/Service/">http://example.com/2022/12/04/Android/Service/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">胡萝卜</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/12/04/Android/%E4%BA%8B%E4%BB%B6%E5%88%86%E5%8F%91%E6%9C%BA%E5%88%B6/" title="事件分发机制"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">事件分发机制</div></div></a></div><div class="next-post pull-right"><a href="/2022/12/04/Android/%E6%B6%88%E6%81%AF%E6%9C%BA%E5%88%B6%E5%85%A8%E8%A7%A3%E6%9E%90%EF%BC%88%E4%B8%8B%EF%BC%89/" title="事件分发机制（下）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">事件分发机制（下）</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">itcarrot</div><div class="author-info__description">再苦再累不掉队，再难再险不放弃</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Service"><span class="toc-number">1.</span> <span class="toc-text">Service</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.0.1.</span> <span class="toc-text">1、启动模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-StartService-%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.0.1.1.</span> <span class="toc-text">1.1 StartService() 模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-BindService-%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.0.1.2.</span> <span class="toc-text">1.2 BindService()模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-startService-x2F-bindService%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8"><span class="toc-number">1.0.1.3.</span> <span class="toc-text">1.3 startService&#x2F;bindService同时使用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-%E4%B8%BA%E4%BB%80%E4%B9%88bindService%E5%8F%AF%E4%BB%A5%E8%B7%9FActivity%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E8%81%94%E5%8A%A8%EF%BC%9F%EF%BC%88%E9%99%84%E5%8A%A0%E9%A2%98%EF%BC%89"><span class="toc-number">1.0.1.4.</span> <span class="toc-text">1.4 为什么bindService可以跟Activity生命周期联动？（附加题）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-5-%E5%9C%A8%E4%BB%80%E4%B9%88%E6%83%85%E5%86%B5%E4%B8%8B%E4%BD%BF%E7%94%A8-startService-%E6%88%96-bindService-%E6%88%96-%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8startService-%E5%92%8C-bindService%EF%BC%9F"><span class="toc-number">1.0.1.5.</span> <span class="toc-text">1.5 在什么情况下使用 startService 或 bindService 或 同时使用startService 和 bindService？</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Service%E7%9A%84%E7%A7%8D%E7%B1%BB%E5%92%8C%E4%BC%98%E5%85%88%E7%BA%A7"><span class="toc-number">1.0.2.</span> <span class="toc-text">2 Service的种类和优先级</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-Service%E7%9A%84%E7%A7%8D%E7%B1%BB"><span class="toc-number">1.0.2.1.</span> <span class="toc-text">2.1 Service的种类</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-service%E7%9A%84%E4%BC%98%E5%85%88%E7%BA%A7"><span class="toc-number">1.0.2.2.</span> <span class="toc-text">2.2 service的优先级</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81service%E4%B8%8D%E8%A2%AB%E6%9D%80%E6%AD%BB"><span class="toc-number">1.0.2.3.</span> <span class="toc-text">3.3 如何保证service不被杀死</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E8%AF%B4%E8%AF%B4Activity%E3%80%81Intent%E3%80%81Service-%E6%98%AF%E4%BB%80%E4%B9%88%E5%85%B3%E7%B3%BB%EF%BC%9F"><span class="toc-number">1.0.3.</span> <span class="toc-text">3、说说Activity、Intent、Service 是什么关系？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%E3%80%81%E7%9B%B4%E6%8E%A5%E5%9C%A8Activity%E4%B8%AD%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AAthread%E8%B7%9F%E5%9C%A8service%E4%B8%AD%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AAthread%E4%B9%8B%E9%97%B4%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-number">1.0.4.</span> <span class="toc-text">4、直接在Activity中创建一个thread跟在service中创建一个thread之间的区别？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Service%E5%92%8CActivity%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E9%80%9A%E4%BF%A1"><span class="toc-number">1.0.5.</span> <span class="toc-text">5 Service和Activity如何进行通信</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-IntentService%E6%98%AF%E4%BB%80%E4%B9%88-IntentService%E5%8E%9F%E7%90%86%EF%BC%8C%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E5%8F%8A%E5%85%B6%E4%B8%8EService%E7%9A%84%E5%8C%BA-%E5%88%AB"><span class="toc-number">1.0.6.</span> <span class="toc-text">6 .IntentService是什么,IntentService原理，应用场景及其与Service的区 别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-bindService%E5%92%8CstartService%E6%B7%B7%E5%90%88%E4%BD%BF%E7%94%A8%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E4%BB%A5%E5%8F%8A%E6%80%8E%E4%B9%88%E5%85%B3%E9%97%AD"><span class="toc-number">1.0.7.</span> <span class="toc-text">7 bindService和startService混合使用的生命周期以及怎么关闭</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/%E6%B6%88%E6%81%AF%E6%9C%BA%E5%88%B6%E5%85%A8%E8%A7%A3%E6%9E%90Handler/" title="消息机制全解析Handler">消息机制全解析Handler</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/Activity/" title="Activity">Activity</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/ContentProvider%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E8%80%85/" title="ContentProvider内容提供者">ContentProvider内容提供者</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/Broadcast%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6/" title="Broadcast广播机制">Broadcast广播机制</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/AsyncTask%E5%85%A8%E8%A7%A3%E6%9E%90/" title="AsyncTask全解析">AsyncTask全解析</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By itcarrot</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

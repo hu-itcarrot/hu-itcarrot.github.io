@@ -1,0 +1,420 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>AsyncTask全解析 | 胡萝卜</title><meta name="author" content="itcarrot"><meta name="copyright" content="itcarrot"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="AsyncTask全解析1、AsyncTask介绍回顾上一节的问题：更新UI的方式有哪些？答案有：  Activity.runOnUiThread(Runnable) View.post(Runnable)，View.postDelay(Runnable, long) Handler AsyncTask Rxjava LiveData  本文的主角AsyncTask，本人现在用得比较少，更多用的是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AsyncTask全解析">
+<meta property="og:url" content="http://example.com/2022/12/04/Android/AsyncTask%E5%85%A8%E8%A7%A3%E6%9E%90/index.html">
+<meta property="og:site_name" content="胡萝卜">
+<meta property="og:description" content="AsyncTask全解析1、AsyncTask介绍回顾上一节的问题：更新UI的方式有哪些？答案有：  Activity.runOnUiThread(Runnable) View.post(Runnable)，View.postDelay(Runnable, long) Handler AsyncTask Rxjava LiveData  本文的主角AsyncTask，本人现在用得比较少，更多用的是">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2022-12-04T10:48:34.000Z">
+<meta property="article:modified_time" content="2023-12-07T09:05:44.668Z">
+<meta property="article:author" content="itcarrot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2022/12/04/Android/AsyncTask%E5%85%A8%E8%A7%A3%E6%9E%90/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'AsyncTask全解析',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-12-07 17:05:44'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="胡萝卜" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="胡萝卜"><span class="site-name">胡萝卜</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">AsyncTask全解析</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-12-07T09:05:44.668Z" title="更新于 2023-12-07 17:05:44">2023-12-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Android/">Android</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="AsyncTask全解析"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="AsyncTask全解析"><a href="#AsyncTask全解析" class="headerlink" title="AsyncTask全解析"></a>AsyncTask全解析</h1><h1 id="1、AsyncTask介绍"><a href="#1、AsyncTask介绍" class="headerlink" title="1、AsyncTask介绍"></a>1、AsyncTask介绍</h1><p>回顾上一节的问题：更新UI的方式有哪些？答案有：</p>
+<ul>
+<li>Activity.runOnUiThread(Runnable)</li>
+<li>View.post(Runnable)，View.postDelay(Runnable, long)</li>
+<li>Handler</li>
+<li>AsyncTask</li>
+<li>Rxjava</li>
+<li>LiveData</li>
+</ul>
+<p>本文的主角AsyncTask，本人现在用得比较少，更多用的是Rxjava。同时面试的时候知道AsyncTask是什么？怎么用？有什么不足之处或者需要注意什么？懂了这三个问题一般就可以了。至于看源码，可当作进阶，个人建议还是有必要学习一下的。那么AssyncTask究竟是什么呢？</p>
+<p>AsyncTask是一个轻量级的异步任务类，可以在线程池里执行比较耗时的后台任务，然后把执行的进度和最后的结果传递给主进程，并在主进程中更新UI。使用容易，而且好理解。</p>
+<h2 id="1-1-AsyncTask的使用"><a href="#1-1-AsyncTask的使用" class="headerlink" title="1.1 AsyncTask的使用"></a>1.1 AsyncTask的使用</h2><p>同样从使用入手，看看代码。以下代码以往文件里写数据为例：</p>
+<pre><code>private class FileTestTask extends AsyncTask&lt;Void, Long, Boolean&gt; &#123; //1
+
+    @Override
+    protected void onPreExecute() &#123;
+        //初始化一些数据
+        initProcessInfo();
+    &#125;
+
+    @Override
+    protected Long doInBackground(Void... integers) &#123;
+        //创建目录
+        ...
+        while (mTotalWriteSize &lt;= mInitFreeDataValue) &#123;
+            ...
+            mTotalWriteSize += writeSize / 1024 / 1024; // M
+            //2：反馈当前任务进度
+            publishProgress(mTotalWriteSize);
+        &#125;
+
+        return true;
+    &#125;
+
+    @Override
+    protected void onProgressUpdate(Long... progresses) &#123; //3
+        if (progresses != null &amp;&amp; progresses.length &gt;= 1) &#123;
+            updateProcessInfo(progresses[0]); //更新进度条
+        &#125;
+    &#125;
+
+    @Override
+    protected void onPostExecute(Boolean result) &#123; //4
+        if (result) &#123;
+            updateContentInfo(R.string.text_show_result_test_over);
+        &#125; else &#123;
+            updateContentInfo(R.string.text_show_result_fail);
+        &#125;
+    &#125;
+&#125;
+
+//主线程中使用自定义的FileTestTask
+if (mFileTestTask == null) &#123;
+    mFileTestTask = new FileTestTask();
+    mFileTestTask.execute();
+&#125;
+</code></pre>
+<h2 id="1-2-核心方法"><a href="#1-2-核心方法" class="headerlink" title="1.2 核心方法"></a>1.2 核心方法</h2><ul>
+<li><p>onPreExecute()：字面上就是“提前执行”，会在后台任务开始前调用，并在主线程中执行，因此常用于初始化一些数据和界面。</p>
+</li>
+<li><p>doInBackground(Params…)：字面上是“在背后处理”，就是在后台处理所有耗时的任务，这些任务都会在子线程中处理。有两个需要注意的点：</p>
+<ul>
+<li>不能在这个函数进行UI操作，因为该函数是在子线程运行的。如果需要更新当前任务完成进度条，需要运行publishProgress(Progress…)，如上面的注释2，而最终是调用onProgressUpdate()去更新进度条；</li>
+<li>执行完之后可以通过return将执行的结果返回，返回的结果会在onPostExecute()里执行，如注释4，我这边只是更新了一个文字内容。</li>
+</ul>
+</li>
+<li><p>onProgressUpdate(Progress…)：如上一段所述，调用publishProgress(Progress…)后会把参数（如当前任务处理的进度）传递给onProgressUpdate()并被调用，因为该方法在主进程进行，因此可以进行UI修改。</p>
+</li>
+<li><p>onPostExecute()：如上所述，doInBackground()会把执行结果返回给 onPostExecute()并被调用，该方法也在主线程运行，可以做一些结尾的动作，如提示任务完成等。</p>
+</li>
+</ul>
+<p>上面几个核心方法的调用顺序为： onPreExecute() –&gt; doInBackground() –&gt; publishProgress() –&gt; onProgressUpdate() –&gt; onPostExecute()。</p>
+<p>如果不需要更新进度则为onPreExecute() –&gt; doInBackground() –&gt; onPostExecute()。</p>
+<h2 id="1-3-三个泛型类参数"><a href="#1-3-三个泛型类参数" class="headerlink" title="1.3 三个泛型类参数"></a>1.3 三个泛型类参数</h2><p>在1.1小节案例代码里的注释1 可以看到AsyncTask&lt;Void, Long, Boolean&gt;，其原型是 AsyncTask&lt;Params, Progress, Result&gt;，这三个泛型类参数含义如下：</p>
+<ul>
+<li>Params：开始异步任务执行时传入的参数类型，对应doInBackground()，本案例是Void，代表不需要传入参数；</li>
+<li>Progress：异步任务执行过程中，返回下载进度值的类型，对应onProgressUpdate()，本案例是Long，代表目前已经写入的字节数；</li>
+<li>Result：异步任务执行完成后，返回的结果类型，对应onPostExecute()，本案例返回的是Boolean类型，true代表任务完成；</li>
+</ul>
+<h1 id="2、AsyncTask使用心得"><a href="#2、AsyncTask使用心得" class="headerlink" title="2、AsyncTask使用心得"></a>2、AsyncTask使用心得</h1><h2 id="2-1-AsyncTask的使用注意事项"><a href="#2-1-AsyncTask的使用注意事项" class="headerlink" title="2.1 AsyncTask的使用注意事项"></a>2.1 AsyncTask的使用注意事项</h2><p>从第1小节，我们了解了AsyncTask的使用方法和步骤，现在再强调几个注意点，不仅面试官可能会问到，平时自己工作中也要多注意：</p>
+<ul>
+<li>AsyncTask的实例需要在UI线程也就是主线程中创建，调用execute()开始执行任务时，也要在主线程执行；</li>
+<li>不要手动调用onPreExecute()，doInBackground(Params… params)，onProgressUpdate(Progress… values)，onPostExecute(Result result)这几个方法；</li>
+<li>只有onPreExecute()，onProgressUpdate(Progress… values)，onPostExecute(Result result)可以执行UI相关操作，doInBackground(Params… params)不能更改UI界面；</li>
+<li>一个任务实例只能执行一次execute()，执行多次会报异常。</li>
+</ul>
+<h2 id="2-2-AsyncTask的不足之处"><a href="#2-2-AsyncTask的不足之处" class="headerlink" title="2.2 AsyncTask的不足之处"></a>2.2 AsyncTask的不足之处</h2><ol>
+<li>生命周期</li>
+</ol>
+<p>AsyncTask不与任何组件绑定生命周期，因此会出现组件生命周期结束了，但AsyncTask还存在，所以需要在onDestroy()调用 cancel(boolean)，手动结束AsyncTask；</p>
+<ol start="2">
+<li>内存泄漏</li>
+</ol>
+<p>和之前说的Handler造成内存泄露的原因是一样的。如果AsyncTask被声明为Activity的非静态的内部类，如本文使用代码案例一样，那么AsyncTask会保留一个所在Activity的引用。如果Activiy被销毁，此时因此AsyncTask保留了它的引用，导致Activity无法被回收，引起内存泄露。</p>
+<p>3.) 结果丢失</p>
+<p>如果屏幕旋转或Activity在后台被系统杀掉等情况会导致Activity重新创建，如果之前运行的AsyncTask是非静态的内部类，此时就会持有之前旧的Activity的引用，而旧的Activity已经销毁了，这时调用onPostExecute()再去更新界面将不再生效，无法更新到新的Activity到界面。</p>
+<h1 id="3、-源码分析（进阶）"><a href="#3、-源码分析（进阶）" class="headerlink" title="3、 源码分析（进阶）"></a>3、 源码分析（进阶）</h1><p>如果看完前面2节，去面试已经没问题了，对AsyncTask的源码分析属于进阶，如果有时间，建议看看源码，因为整个第3节的源码代码关联性很强，为了方便说明，所有代码块的关键代码行的注释码都是连贯的。</p>
+<p>回顾下AsyncTak的使用方法：我们只要执行new FileTestTask().execute()，就会自动执行onPreExecute()，doInBackground(Params… params)，onProgressUpdate(Progress… values)，onPostExecute(Result result)这几个方法。这是怎么做到的呢？</p>
+<p>带着这个思路，按顺序，我们先看看在初始化一个AsyncTask时，调用函数都做了什么。</p>
+<pre><code class="java">public AsyncTask() &#123;
+        mWorker = new WorkerRunnable&lt;Params, Result&gt;() &#123;//1
+            public Result call() throws Exception &#123;
+                mTaskInvoked.set(true);
+                Result result = null;
+                try &#123;
+                    Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+                    //noinspection unchecked
+                    result = doInBackground(mParams); //2
+                    Binder.flushPendingCommands();
+                &#125; catch (Throwable tr) &#123;
+                    mCancelled.set(true);
+                    throw tr;
+                &#125; finally &#123;
+                    postResult(result); //3
+                &#125;
+                return result;
+            &#125;
+        &#125;;
+
+        mFuture = new FutureTask&lt;Result&gt;(mWorker) &#123; //4
+            @Override
+            protected void done() &#123;
+                try &#123;
+                    postResultIfNotInvoked(get());
+                &#125; catch (InterruptedException e) &#123;
+                    android.util.Log.w(LOG_TAG, e);
+                &#125; catch (ExecutionException e) &#123;
+                    throw new RuntimeException(&quot;An error occurred while executing doInBackground()&quot;,
+                            e.getCause());
+                &#125; catch (CancellationException e) &#123;
+                    postResultIfNotInvoked(null);
+                &#125;
+            &#125;
+        &#125;;
+    &#125;
+</code></pre>
+<p>我们可以看到这仅仅是初始化了两个变量，mWorker和mFuture，并在初始化mFuture的时候将mWorker作为参数传入，如注释1和注释4。此时仅仅完成初始化，什么都没做。不过记住这个注释1的call()函数，里面有注释2和注释3两个关键函数，后面是如何调用到的呢？接着执行execute()就开始执行任务了，来看看execute()的源码：</p>
+<pre><code class="java">
+public final AsyncTask&lt;Params, Progress, Result&gt; execute(Params... params) &#123;
+    return executeOnExecutor(sDefaultExecutor, params); //5
+&#125;
+  
+public final AsyncTask&lt;Params, Progress, Result&gt; executeOnExecutor(Executor exec,
+            Params... params) &#123;
+    if (mStatus != Status.PENDING) &#123;
+        switch (mStatus) &#123;
+            case RUNNING:
+                throw new IllegalStateException(&quot;Cannot execute task:&quot;
+                        + &quot; the task is already running.&quot;);
+            case FINISHED:
+                throw new IllegalStateException(&quot;Cannot execute task:&quot;
+                        + &quot; the task has already been executed &quot;
+                        + &quot;(a task can be executed only once)&quot;);
+        &#125;
+    &#125;
+
+    mStatus = Status.RUNNING;
+
+    onPreExecute(); //6
+
+    mWorker.mParams = params;
+    exec.execute(mFuture); //7
+
+    return this;
+&#125;
+</code></pre>
+<p>注释5，execute()调用executeOnExecutor(sDefaultExecutor, params)，终于在注释6，看到了熟悉的函数onPreExecute()！执行完onPreExecute()，即完成了一些初始化工作后，调用注释7:exec.execute(mFuture)开始执行耗时任务，并把上面注释4初始化的mFuture实例传入。</p>
+<p>进一步看看注释7这个exec是什么？看下代码调用，就知道exec是注释5的sDefaultExecutor，因此注释7的exec.execute(mFuture)实际上是执行sDefaultExecutor.execute(mFuture)。再追述源码可以看到sDefaultExecutor是SerialExecutor类，具体源码如下：</p>
+<pre><code class="java">public static final Executor SERIAL_EXECUTOR = new SerialExecutor();
+private static volatile Executor sDefaultExecutor = SERIAL_EXECUTOR;
+
+private static class SerialExecutor implements Executor &#123;
+    final ArrayDeque&lt;Runnable&gt; mTasks = new ArrayDeque&lt;Runnable&gt;(); //8
+    Runnable mActive; //9
+
+    public synchronized void execute(final Runnable r) &#123; //10
+        mTasks.offer(new Runnable() &#123; //11
+            public void run() &#123;
+                try &#123;
+                    r.run(); //12
+                &#125; finally &#123;
+                    scheduleNext(); //13
+                &#125;
+            &#125;
+        &#125;);
+        if (mActive == null) &#123;
+            scheduleNext();
+        &#125;
+    &#125;
+
+    protected synchronized void scheduleNext() &#123;
+        if ((mActive = mTasks.poll()) != null) &#123; //14
+            THREAD_POOL_EXECUTOR.execute(mActive); //15
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p>可以看出这个SerialExecutor是静态内部类，因此每个AsyncTask都共有。SerialExecutor维护了一个队列，也就是注释8的mTasks。在注释10通过加锁保证AsyncTask的任务是串行的。好好看注释10这个execute()函数，主要做了两件事：</p>
+<ol>
+<li>在注释11向队列mTask加入一个新的任务，也就是注释7传入的mFuture对象；</li>
+<li>调用注释 13的scheduleNext()方法，进而调用注释14的THREAD_POOL_EXECUTOR.execute(mActive)来执行队列头部任务。</li>
+</ol>
+<p>所以，SerialExecutor只是保证任务是串行的，真正执行任务还是交给THREAD_POOL_EXECUTOR。继续追代码，看看THREAD_POOL_EXECUTOR是什么？</p>
+<pre><code class="java"> ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
+                CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_SECONDS, TimeUnit.SECONDS,
+                sPoolWorkQueue, sThreadFactory);
+        threadPoolExecutor.allowCoreThreadTimeOut(true);
+        THREAD_POOL_EXECUTOR = threadPoolExecutor; //16
+</code></pre>
+<p>注释16可以看到THREAD_POOL_EXECUTOR就是一个线程池，注释15调用了线程池的execute()方法，执行具体的耗时任务，而注释15的mActive是从注释14的mTasks队列获取的Runnable，这个Runnable又是注释11加入队列的，注释11这个Runnable就是注释7传入的mFuture，接着这个mFuture又是注释4传入的mWorker构造的。通过倒推，就知道注释15执行的具体的耗时任务其实就是注释1中的call()函数。终于，调用到了注释1，先执行完doInBackground()方法处理后台耗时任务，又执行postResult()方法返回处理结果，一切都和我们想的一样！</p>
+<p>最后看看怎么结束任务吧。</p>
+<pre><code class="java"> private Result postResult(Result result) &#123;
+        @SuppressWarnings(&quot;unchecked&quot;)
+        Message message = getHandler().obtainMessage(MESSAGE_POST_RESULT,
+                new AsyncTaskResult&lt;Result&gt;(this, result)); //17 
+        message.sendToTarget();
+        return result;
+    &#125;
+</code></pre>
+<p>没错，就是Handler机制。AsyncTask内部又一个Handler对象，这也是为什么2.1小节说AsyncTask需要在主线程创建，因为Handler需要在主线程创建：</p>
+<pre><code class="java">private static class InternalHandler extends Handler &#123;
+        public InternalHandler() &#123;
+            super(Looper.getMainLooper());
+        &#125;
+
+        @SuppressWarnings(&#123;&quot;unchecked&quot;, &quot;RawUseOfParameterizedType&quot;&#125;)
+        @Override
+        public void handleMessage(Message msg) &#123;
+            AsyncTaskResult&lt;?&gt; result = (AsyncTaskResult&lt;?&gt;) msg.obj;
+            switch (msg.what) &#123;
+                case MESSAGE_POST_RESULT:
+                    // There is only one result
+                    result.mTask.finish(result.mData[0]);  //18
+                    break;
+                case MESSAGE_POST_PROGRESS:
+                    result.mTask.onProgressUpdate(result.mData); //19
+                    break;
+            &#125;
+        &#125;
+    &#125;
+</code></pre>
+<p>代码非常清晰，如果收到MESSAGE_POST_PROGRESS消息，在1.1小节注释2的地方发送，就执行注释19，又是我们熟悉的onProgressUpdate()，如果收到MESSAGE_POST_RESULT消息，就执行注释18的finish()。</p>
+<pre><code class="java">private void finish(Result result) &#123;
+        if (isCancelled()) &#123;
+            onCancelled(result); //20
+        &#125; else &#123;
+            onPostExecute(result); //21
+        &#125;
+        mStatus = Status.FINISHED;
+    &#125;
+</code></pre>
+<p>如果按2.2小节说的调用cancel(boolean)，则会回调注释20，否则执行注释21:onPostExecute(result)。</p>
+<p>到此结束源码分析。相信文章开头4个问题大家都理解了。</p>
+<h1 id="4、总结"><a href="#4、总结" class="headerlink" title="4、总结"></a>4、总结</h1><p>AsyncTask中有两个线程池（SerialExecutor和THREAD_POOL_EXECUTOR）和一个Handler（InternalHandler），其中线程池SerialExecutor用于任务的排队，而线程池THREAD_POOL_EXECUTOR用于真正地执行任务，InternalHandler用于将执行环境从线程池切换到主线程。</p>
+<p>‍</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">itcarrot</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2022/12/04/Android/AsyncTask%E5%85%A8%E8%A7%A3%E6%9E%90/">http://example.com/2022/12/04/Android/AsyncTask%E5%85%A8%E8%A7%A3%E6%9E%90/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">胡萝卜</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/12/04/Android/Broadcast%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6/" title="Broadcast广播机制"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Broadcast广播机制</div></div></a></div><div class="next-post pull-right"><a href="/2022/12/04/Android/Context/" title="Context"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Context</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">itcarrot</div><div class="author-info__description">再苦再累不掉队，再难再险不放弃</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#AsyncTask%E5%85%A8%E8%A7%A3%E6%9E%90"><span class="toc-number">1.</span> <span class="toc-text">AsyncTask全解析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1%E3%80%81AsyncTask%E4%BB%8B%E7%BB%8D"><span class="toc-number">2.</span> <span class="toc-text">1、AsyncTask介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-AsyncTask%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">2.1.</span> <span class="toc-text">1.1 AsyncTask的使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-%E6%A0%B8%E5%BF%83%E6%96%B9%E6%B3%95"><span class="toc-number">2.2.</span> <span class="toc-text">1.2 核心方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-%E4%B8%89%E4%B8%AA%E6%B3%9B%E5%9E%8B%E7%B1%BB%E5%8F%82%E6%95%B0"><span class="toc-number">2.3.</span> <span class="toc-text">1.3 三个泛型类参数</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2%E3%80%81AsyncTask%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97"><span class="toc-number">3.</span> <span class="toc-text">2、AsyncTask使用心得</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-AsyncTask%E7%9A%84%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">3.1.</span> <span class="toc-text">2.1 AsyncTask的使用注意事项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-AsyncTask%E7%9A%84%E4%B8%8D%E8%B6%B3%E4%B9%8B%E5%A4%84"><span class="toc-number">3.2.</span> <span class="toc-text">2.2 AsyncTask的不足之处</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3%E3%80%81-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89"><span class="toc-number">4.</span> <span class="toc-text">3、 源码分析（进阶）</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4%E3%80%81%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">4、总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/%E6%B6%88%E6%81%AF%E6%9C%BA%E5%88%B6%E5%85%A8%E8%A7%A3%E6%9E%90Handler/" title="消息机制全解析Handler">消息机制全解析Handler</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/Activity/" title="Activity">Activity</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/ContentProvider%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E8%80%85/" title="ContentProvider内容提供者">ContentProvider内容提供者</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/Broadcast%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6/" title="Broadcast广播机制">Broadcast广播机制</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/AsyncTask%E5%85%A8%E8%A7%A3%E6%9E%90/" title="AsyncTask全解析">AsyncTask全解析</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By itcarrot</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
