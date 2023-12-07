@@ -353,6 +353,28 @@
   </entry>
   
   <entry>
+    <title>Clash for windows 配置</title>
+    <link href="http://example.com/2022/10/04/%E9%85%8D%E7%BD%AE/Clash%20for%20windows%20%E9%85%8D%E7%BD%AE/"/>
+    <id>http://example.com/2022/10/04/%E9%85%8D%E7%BD%AE/Clash%20for%20windows%20%E9%85%8D%E7%BD%AE/</id>
+    <published>2022-10-04T07:46:33.000Z</published>
+    <updated>2023-12-07T09:38:17.699Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Clash-for-windows-配置"><a href="#Clash-for-windows-配置" class="headerlink" title="Clash for windows 配置"></a>Clash for windows 配置</h1><h3 id="1、-去下载冲突软件最新版本，下载地址-https-github-com-Fndroid-clash-for-windows-pkg-x2F-releases"><a href="#1、-去下载冲突软件最新版本，下载地址-https-github-com-Fndroid-clash-for-windows-pkg-x2F-releases" class="headerlink" title="1、 去下载冲突软件最新版本，下载地址: https://github.com/Fndroid/clash_for_windows_pkg&#x2F;releases"></a>1、 去下载冲突软件最新版本，下载地址: <a href="https://github.com/Fndroid/clash_for_windows_pkg/releases">https://github.com/Fndroid/clash_for_windows_pkg&#x2F;releases</a></h3><p>​<img src="/images/clash/image-20231207112317-nz9p7hj.png" alt="image">​</p><h3 id="2、-下载下来直接安装"><a href="#2、-下载下来直接安装" class="headerlink" title="2、 下载下来直接安装"></a>2、 下载下来直接安装</h3><p>​<img src="/images/clash/image-20231207112351-c97xwwi.png" alt="image">​</p><h3 id="3、打开页面，默认是英文的"><a href="#3、打开页面，默认是英文的" class="headerlink" title="3、打开页面，默认是英文的"></a>3、打开页面，默认是英文的</h3><p>​<img src="/images/clash/image-20231207112418-v4gqzub.png" alt="image">​</p><h3 id="下载汉化包"><a href="#下载汉化包" class="headerlink" title="下载汉化包"></a>下载汉化包</h3><h4 id="1、-下载汉化包下载汉化包-https-github-com-ender-zhao-Clash-for-Windows-Chinese-x2F-releases"><a href="#1、-下载汉化包下载汉化包-https-github-com-ender-zhao-Clash-for-Windows-Chinese-x2F-releases" class="headerlink" title="1、 下载汉化包下载汉化包: https://github.com/ender-zhao/Clash-for-Windows_Chinese&#x2F;releases"></a>1、 下载汉化包下载汉化包: <a href="https://github.com/ender-zhao/Clash-for-Windows_Chinese/releases">https://github.com/ender-zhao/Clash-for-Windows_Chinese&#x2F;releases</a></h4><p>​<img src="/images/clash/image-20231207112543-37mxt8m.png" alt="image">​</p><h4 id="2、关闭退出刚刚打开的clash软件，打开clash软件的文件夹，找到resources文件并打开，把刚刚下载的汉化包asar给拖进去替换掉"><a href="#2、关闭退出刚刚打开的clash软件，打开clash软件的文件夹，找到resources文件并打开，把刚刚下载的汉化包asar给拖进去替换掉" class="headerlink" title="2、关闭退出刚刚打开的clash软件，打开clash软件的文件夹，找到resources文件并打开，把刚刚下载的汉化包asar给拖进去替换掉"></a>2、关闭退出刚刚打开的clash软件，打开clash软件的文件夹，找到resources文件并打开，把刚刚下载的汉化包asar给拖进去替换掉</h4><p>​<img src="/images/clash/image-20231207112645-bs4tpbr.png" alt="image">​</p><h4 id="3、在次打开小猫咪clash软件，就是汉化版的了，对于英文不是很好的同学还是解决了一个不错的问题，当然也有出现汉化后打不开系统代理System-Proxy这个按钮的情况，那这个时候只能把Clash文件夹里所有的文件删除，重新下载解压Clash软件，老老实实的用英文版。"><a href="#3、在次打开小猫咪clash软件，就是汉化版的了，对于英文不是很好的同学还是解决了一个不错的问题，当然也有出现汉化后打不开系统代理System-Proxy这个按钮的情况，那这个时候只能把Clash文件夹里所有的文件删除，重新下载解压Clash软件，老老实实的用英文版。" class="headerlink" title="3、在次打开小猫咪clash软件，就是汉化版的了，对于英文不是很好的同学还是解决了一个不错的问题，当然也有出现汉化后打不开系统代理System Proxy这个按钮的情况，那这个时候只能把Clash文件夹里所有的文件删除，重新下载解压Clash软件，老老实实的用英文版。"></a>3、在次打开小猫咪clash软件，就是汉化版的了，对于英文不是很好的同学还是解决了一个不错的问题，当然也有出现汉化后打不开系统代理System Proxy这个按钮的情况，那这个时候只能把Clash文件夹里所有的文件删除，重新下载解压Clash软件，老老实实的用英文版。</h4><p>​<img src="/images/clash/image-20231207112654-cjo2n7g.png" alt="image">​</p><p>‍</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;Clash-for-windows-配置&quot;&gt;&lt;a href=&quot;#Clash-for-windows-配置&quot; class=&quot;headerlink&quot; title=&quot;Clash for windows 配置&quot;&gt;&lt;/a&gt;Clash for windows 配置&lt;/h1&gt;&lt;</summary>
+      
+    
+    
+    
+    <category term="配置" scheme="http://example.com/categories/%E9%85%8D%E7%BD%AE/"/>
+    
+    
+  </entry>
+  
+  <entry>
     <title>Dataway</title>
     <link href="http://example.com/2022/08/16/%E9%83%A8%E7%BD%B2/Dataway/"/>
     <id>http://example.com/2022/08/16/%E9%83%A8%E7%BD%B2/Dataway/</id>
@@ -436,28 +458,6 @@
     
     
     <category term="docker" scheme="http://example.com/categories/docker/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>热部署</title>
-    <link href="http://example.com/2022/06/04/%E9%83%A8%E7%BD%B2/Devtools/"/>
-    <id>http://example.com/2022/06/04/%E9%83%A8%E7%BD%B2/Devtools/</id>
-    <published>2022-06-04T10:48:34.000Z</published>
-    <updated>2023-12-07T08:22:18.866Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="热部署Devtools"><a href="#热部署Devtools" class="headerlink" title="热部署Devtools"></a>热部署Devtools</h1><h4 id="第一步-添加依赖"><a href="#第一步-添加依赖" class="headerlink" title="第一步 添加依赖"></a>第一步 添加依赖</h4><pre><code class="java">&lt;dependency&gt;    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;    &lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;    &lt;scope&gt;runtime&lt;/scope&gt;    &lt;optional&gt;true&lt;/optional&gt;&lt;/dependency&gt;</code></pre><h4 id="第二步-添加配置"><a href="#第二步-添加配置" class="headerlink" title="第二步 添加配置"></a>第二步 添加配置</h4><pre><code class="java">&lt;build&gt;    &lt;finalName&gt;你自己的工程名字&lt;/finalName&gt;    &lt;plugins&gt;        &lt;plugin&gt;            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;            &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;            &lt;configuration&gt;                &lt;fork&gt;true&lt;/fork&gt;                &lt;addResources&gt;true&lt;/addResources&gt;            &lt;/configuration&gt;        &lt;/plugin&gt;    &lt;/plugins&gt;&lt;/build&gt;</code></pre><h4 id="第三步-修改配置"><a href="#第三步-修改配置" class="headerlink" title="第三步 修改配置"></a>第三步 修改配置</h4><p>​<img src="/images/%E7%83%AD%E9%83%A8%E7%BD%B2/image-20230801105429-fu9m0yn.png" alt="image">​</p><p>​<img src="/images/%E7%83%AD%E9%83%A8%E7%BD%B2/image-20230801105433-2h97hee.png" alt="image">​</p><h4 id="第四步-添加配置"><a href="#第四步-添加配置" class="headerlink" title="第四步 添加配置"></a>第四步 添加配置</h4><p>​<img src="/images/%E7%83%AD%E9%83%A8%E7%BD%B2/image-20230801105507-n40ldyf.png" alt="image">​</p><p>​<img src="/images/%E7%83%AD%E9%83%A8%E7%BD%B2/image-20230801105512-evt811g.png" alt="image">​</p><p>新版本可能在修改时找不到第一项，需要打开设置进行设置</p><p>​<img src="/images/%E7%83%AD%E9%83%A8%E7%BD%B2/image-20230801105627-ficn5z7.png" alt="image">​</p><h4 id="第五步-重启idea"><a href="#第五步-重启idea" class="headerlink" title="第五步 重启idea"></a>第五步 重启idea</h4><p>‍</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h1 id=&quot;热部署Devtools&quot;&gt;&lt;a href=&quot;#热部署Devtools&quot; class=&quot;headerlink&quot; title=&quot;热部署Devtools&quot;&gt;&lt;/a&gt;热部署Devtools&lt;/h1&gt;&lt;h4 id=&quot;第一步-添加依赖&quot;&gt;&lt;a href=&quot;#第一步-添加依赖&quot;</summary>
-      
-    
-    
-    
-    <category term="部署" scheme="http://example.com/categories/%E9%83%A8%E7%BD%B2/"/>
     
     
   </entry>
