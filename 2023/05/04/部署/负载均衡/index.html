@@ -1,0 +1,195 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>负载均衡 | 胡萝卜</title><meta name="author" content="itcarrot"><meta name="copyright" content="itcarrot"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="负载均衡1、 什么是负载均衡负载均衡的主要作用是为多个后端服务提供负载均衡功能，依据不同的负载均衡算法让这些服务可以分摊流量。负载均衡的历史非常悠久，从演进路径上看大致可以分为以下这几个阶段：  第一阶段：这一阶段的负载均衡通常由硬件设备组成，具有高性能、高可靠性的特点，但灵活性较差，价格昂贵。比较典型的是 F5 这种基于硬件的负载均衡。 第二阶段：负载均衡开始以软件形式实现，使其更加灵活和可扩展">
+<meta property="og:type" content="article">
+<meta property="og:title" content="负载均衡">
+<meta property="og:url" content="http://example.com/2023/05/04/%E9%83%A8%E7%BD%B2/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/index.html">
+<meta property="og:site_name" content="胡萝卜">
+<meta property="og:description" content="负载均衡1、 什么是负载均衡负载均衡的主要作用是为多个后端服务提供负载均衡功能，依据不同的负载均衡算法让这些服务可以分摊流量。负载均衡的历史非常悠久，从演进路径上看大致可以分为以下这几个阶段：  第一阶段：这一阶段的负载均衡通常由硬件设备组成，具有高性能、高可靠性的特点，但灵活性较差，价格昂贵。比较典型的是 F5 这种基于硬件的负载均衡。 第二阶段：负载均衡开始以软件形式实现，使其更加灵活和可扩展">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/carrot.png">
+<meta property="article:published_time" content="2023-05-04T04:22:33.000Z">
+<meta property="article:modified_time" content="2023-12-10T08:57:08.148Z">
+<meta property="article:author" content="itcarrot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/carrot.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/05/04/%E9%83%A8%E7%BD%B2/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '负载均衡',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-12-10 16:57:08'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="胡萝卜" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/carrot.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">26</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页|Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 文章|Archives</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类|Categories</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签|Tags</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链|Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于|About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="胡萝卜"><span class="site-name">胡萝卜</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页|Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 文章|Archives</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类|Categories</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签|Tags</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链|Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于|About</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">负载均衡</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-05-04T04:22:33.000Z" title="发表于 2023-05-04 12:22:33">2023-05-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-12-10T08:57:08.148Z" title="更新于 2023-12-10 16:57:08">2023-12-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%83%A8%E7%BD%B2/">部署</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="负载均衡"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h1><h1 id="1、-什么是负载均衡"><a href="#1、-什么是负载均衡" class="headerlink" title="1、 什么是负载均衡"></a>1、 什么是负载均衡</h1><p>负载均衡的主要作用是为多个后端服务提供负载均衡功能，依据不同的负载均衡算法让这些服务可以分摊流量。负载均衡的历史非常悠久，从演进路径上看大致可以分为以下这几个阶段：</p>
+<ul>
+<li>第一阶段：这一阶段的负载均衡通常由硬件设备组成，具有高性能、高可靠性的特点，但灵活性较差，价格昂贵。比较典型的是 F5 这种基于硬件的负载均衡。</li>
+<li>第二阶段：负载均衡开始以软件形式实现，使其更加灵活和可扩展，通常以软件分发的形式出现，因此价格也比较低廉，比如 LVS 就属于这一类。</li>
+<li>第三阶段：随着云计算技术的兴起，负载均衡也开始有了云版本，这个版本的负载均衡其中一个好处是可以帮助企业以更低的成本获得高性能的负载均衡服务，另一个好处是它能够利用云计算的可扩展性和弹性的特点来提高整体可用性。例如 AWS 的 Classic Load Balancer、Application Load Balancer、Network Load Balancer 等。</li>
+</ul>
+<p>负载均衡除了用于分摊流量、提高网络的伸缩性外，还可以用于提升网络安全。比如可以将内网服务器与外网进行隔离，防止互联网的恶意攻击和访问。一个简单的使用场景就是，一个包含敏感信息的内部服务器，负载均衡可以把内部服务器隔离在内网中，这样就能有效保护内部服务器的安全。</p>
+<p>​<img src="/images/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/d1e85b13cc28a1297775db720186ec90-20231210095848-uvu6tun.png" alt="d1e85b13cc28a1297775db720186ec90">​</p>
+<h1 id="2、-什么是API网关（Gateway"><a href="#2、-什么是API网关（Gateway" class="headerlink" title="2、 什么是API网关（Gateway)"></a>2、 什么是API网关（Gateway)</h1><p>API 网关简单来说是一种主要工作在七层，专门用于 API 的管理和流量转发的基础设施，并在此基础上拥有负载均衡所不具备的强大的扩展性，比如：认证、可观测性、自定义插件等等。简单来说，包括但不限于以下这些特点：</p>
+<ul>
+<li>丰富的路由策略：API 网关工作在七层，所以它可以解析到 HTTP&#x2F;HTTPS 层的数据。因此它可以根据请求的 Path 或 Domain 甚至是 Header 作为条件，将请求转发到不同的上游服务器。</li>
+<li>认证：可以在API层面支持多种多样的认证方式来避免非法请求，比如 OAuth2、JWT 等等，直接将认证这部分服务独立出来，不侵入或者少侵入业务代码。</li>
+<li>限流：支持对不同程度的路由进行细粒度的限流，防止恶意攻击，防止后端服务雪崩。</li>
+<li>可观测性：可观察性是指从系统外部观察系统内部程序的运行状态和资源使用情况的能力。API 网关支持将日志对接到 Kafka、 Google Cloud Logging Service、Elasticsearch 等，支持将相关 metrics 接入到 prometheus、datadog 等。</li>
+<li>扩展：因为 API 网关自身是网关身份，这就注定对它要求是能适配各家公司不同应用场景，比如不同的鉴权、灰度、安全策略、日志收集等，必须允许用户自由选择所需扩展或者自定义开发，因此扩展性很强，允许选择的扩展种类也十分丰富。以 Apache APISIX 举例，光是认证的扩展就有 13 款，几乎涵盖了市面上常见的认证需求。</li>
+</ul>
+<p>目前市面上有许多 API 网关，比如 Apache APISIX、Kong、Tyk、Zuul 等，开发者可以根据自己的需求选择合适的 API 网关。</p>
+<p>​<img src="/images/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/bd795aac8984543e5f4edd2eea111c59-20231210095925-68mnino.png" alt="bd795aac8984543e5f4edd2eea111c59">​</p>
+<h1 id="3、API-网关与负载均衡主要区别"><a href="#3、API-网关与负载均衡主要区别" class="headerlink" title="3、API 网关与负载均衡主要区别"></a>3、API 网关与负载均衡主要区别</h1><p>​<img src="/images/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/6d7cef370327c06e47cf822eb1cd6d63-20231210095942-e9b9b6t.png" alt="6d7cef370327c06e47cf822eb1cd6d63">​</p>
+<p>首先，他们主要工作的侧重点不同。虽然说 API 网关和负载均衡都支持四层和七层的代理。但是，API 网关主要侧重于七层，而负载均衡主要侧重于四层。</p>
+<p>工作在四层的负载均衡拥有许多有利的特点，首先是它相比于 API 网关减少了协议解析的损耗，具有更强的吞吐能力。其次就是它支持透传客户端 IP 地址，而 API 网关，一般是通过 HTTP 头方式传递客户端 IP 地址。</p>
+<p>​<img src="/images/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/455ba57c2ea3a110b2c12f6f961aa5b6-20231210095955-k18jen7.png" alt="455ba57c2ea3a110b2c12f6f961aa5b6">​</p>
+<p>其次就是功能的丰富程度不同。负载均衡的 HTTP 七层处理能力比较弱，往往不包含认证、授权、鉴权、复杂路由逻辑、日志收集等功能。API 网关则具有相当强大的七层协议处理能力，可以在此基础上，附加各种各样的功能扩展，比如权限控制、日志、API 管理、Serverless 等等。</p>
+<p>现如今，科技公司的产品需求变幻莫测，对于很多公司来说支持自定义开发是刚需。API 网关支持各式的自定义开发，比如支持丰富的编程语言，支持在流量转发的不同阶段注入自定义的处理逻辑，而负载均衡基本不支持任何自定义功能开发。</p>
+<p>微信搜索公众号：Java项目精选，回复：java 领取资料 。</p>
+<p>还有一点就是负载均衡通常采用流量直接分发的形式做负载均衡，它通过算法将流量数据直接发向某个后端服务器节点。这意味着后端等待接收流量的每一个服务实例行为都必须是一致的，这减少了一定的灵活性。而 API 网关则是以 URL Path 、Domain、Header 等维度进行流量分发，后端等待接收流量的服务实例可以多种多样，可以是某个 Private API，也可以是某个 gRPC 的 API。这就使流量分发变得十分地灵活。</p>
+<h1 id="4、使用场景"><a href="#4、使用场景" class="headerlink" title="4、使用场景"></a>4、使用场景</h1><p>​<img src="/images/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/a2010c0c7247eb576bafa67903eb72db-20231210100016-224ji3n.png" alt="a2010c0c7247eb576bafa67903eb72db">​</p>
+<p>API 网关对于采用了微服务架构的系统是刚需。首先它可以方便地管理和路由多种不同的后端服务，其次可以提供许多高级功能，比如身份验证、授权、限流、转发、日志记录等功能。这样不同的微服务之间无需重复实现限流、认证等功能，让微服务的每个服务的功能实现更加纯粹，减少研发成本。</p>
+<p>由于微服务的特点是服务种类多，工作在四层的负载均衡不太适合对种类繁多后端服务做负载均衡，它更适合用于单体后端服务。即使是工作在七层的负载均衡，因为一般不能提供较为丰富的高级功能，相比于 API 网关在微服务上优势也不明显。</p>
+<p>‍</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">itcarrot</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/05/04/%E9%83%A8%E7%BD%B2/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/">http://example.com/2023/05/04/%E9%83%A8%E7%BD%B2/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">胡萝卜</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/carrot.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2022/12/04/Android/%E6%B6%88%E6%81%AF%E6%9C%BA%E5%88%B6%E5%85%A8%E8%A7%A3%E6%9E%90Handler/" title="消息机制全解析Handler"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">消息机制全解析Handler</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/carrot.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">itcarrot</div><div class="author-info__description">再苦再累不掉队，再难再险不放弃</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">26</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"><span class="toc-number">1.</span> <span class="toc-text">负载均衡</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1%E3%80%81-%E4%BB%80%E4%B9%88%E6%98%AF%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"><span class="toc-number">2.</span> <span class="toc-text">1、 什么是负载均衡</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2%E3%80%81-%E4%BB%80%E4%B9%88%E6%98%AFAPI%E7%BD%91%E5%85%B3%EF%BC%88Gateway"><span class="toc-number">3.</span> <span class="toc-text">2、 什么是API网关（Gateway)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3%E3%80%81API-%E7%BD%91%E5%85%B3%E4%B8%8E%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E4%B8%BB%E8%A6%81%E5%8C%BA%E5%88%AB"><span class="toc-number">4.</span> <span class="toc-text">3、API 网关与负载均衡主要区别</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4%E3%80%81%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">5.</span> <span class="toc-text">4、使用场景</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/04/%E9%83%A8%E7%BD%B2/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" title="负载均衡">负载均衡</a><time datetime="2023-05-04T04:22:33.000Z" title="发表于 2023-05-04 12:22:33">2023-05-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/%E6%B6%88%E6%81%AF%E6%9C%BA%E5%88%B6%E5%85%A8%E8%A7%A3%E6%9E%90Handler/" title="消息机制全解析Handler">消息机制全解析Handler</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/Activity/" title="Activity">Activity</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/ContentProvider%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E8%80%85/" title="ContentProvider内容提供者">ContentProvider内容提供者</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/12/04/Android/Broadcast%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6/" title="Broadcast广播机制">Broadcast广播机制</a><time datetime="2022-12-04T10:48:34.000Z" title="发表于 2022-12-04 18:48:34">2022-12-04</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By itcarrot</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
