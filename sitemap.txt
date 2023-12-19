@@ -1,3 +1,4 @@
+http://example.com/about/index.html
 http://example.com/2023/12/19/PDF/
 http://example.com/tags/index.html
 http://example.com/link/index.html
